@@ -1,0 +1,5 @@
+# Dữ liệu thật (SĐT, số tài khoản bác sỹ) – KHÔNG đưa lên GitHub
+DuLieu/
+*.json
+*.xlsx
+.DS_Store

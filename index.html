@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phân công đoàn khám</title>
+<style>
+  :root {
+    --bg: #f3f5fa; --card: #fff; --line: #e2e7ef; --text: #1f2937; --muted: #6b7280;
+    --pri: #1d4ed8; --pri-soft: #e8efff; --ok: #15803d; --ok-soft: #e6f6ec;
+    --warn: #b45309; --warn-soft: #fff3df; --bad: #b91c1c; --bad-soft: #fdecec; --star: #f59e0b;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 14px/1.45 "Segoe UI", Roboto, Arial, sans-serif; background: var(--bg); color: var(--text); }
+  header { background: #fff; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 14px; padding: 0 16px; position: sticky; top: 0; z-index: 20; }
+  header .brand { font-weight: 700; color: var(--pri); padding: 12px 0; white-space: nowrap; }
+  #fileBox { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+  #fileBox b { color: var(--text); font-weight: 600; max-width: 220px; overflow: hidden; text-overflow: ellipsis; display: inline-block; vertical-align: bottom; }
+  .start { max-width: 620px; margin: 40px auto; }
+  .start .card { padding: 26px; }
+  .start h1 { font-size: 22px; margin: 0 0 6px; color: var(--pri); }
+  .start .opt { display: flex; flex-direction: column; gap: 10px; margin: 20px 0 6px; }
+  .start .opt .btn { padding: 12px 16px; text-align: left; font-size: 15px; white-space: normal; }
+  .start .opt .btn small { display: block; font-size: 12.5px; opacity: .8; margin-top: 2px; }
+  .note { background: var(--warn-soft); color: #7c4a03; border-radius: 8px; padding: 10px 12px; font-size: 13px; margin-top: 14px; }
+  nav { display: flex; gap: 2px; overflow-x: auto; flex: 1; }
+  nav button { border: 0; background: none; padding: 14px 12px 11px; font: inherit; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; }
+  nav button.on { color: var(--pri); border-bottom-color: var(--pri); font-weight: 600; }
+  main { padding: 16px; max-width: 1500px; margin: 0 auto; }
+  h2 { font-size: 18px; margin: 0; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; margin-bottom: 14px; }
+  .card h3 { margin: 0 0 12px; font-size: 15px; }
+  .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end; margin-bottom: 12px; }
+  .sp { flex: 1; }
+  label.f { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--muted); }
+  .lbl { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+  input, select, textarea { font: inherit; padding: 7px 9px; border: 1px solid #cfd6e2; border-radius: 7px; background: #fff; color: var(--text); min-width: 0; }
+  textarea { resize: vertical; }
+  input:focus, select:focus, textarea:focus { outline: 2px solid #bfd0ff; border-color: var(--pri); }
+  input[type=checkbox] { width: 16px; height: 16px; vertical-align: -3px; }
+  .btn { font: inherit; padding: 7px 13px; border-radius: 7px; border: 1px solid #cfd6e2; background: #fff; cursor: pointer; white-space: nowrap; color: var(--text); }
+  .btn:hover { background: #f3f5f9; }
+  .btn.pri { background: var(--pri); border-color: var(--pri); color: #fff; }
+  .btn.pri:hover { background: #1e40af; }
+  .btn.danger { color: var(--bad); border-color: #f1c4c4; }
+  .btn.sm { padding: 3px 9px; font-size: 12.5px; }
+  .btn.ghost { border-color: transparent; background: none; }
+  .btn:disabled { opacity: .5; cursor: default; }
+  .seg { display: inline-flex; border: 1px solid #cfd6e2; border-radius: 7px; overflow: hidden; }
+  .seg button { border: 0; border-right: 1px solid #cfd6e2; background: #fff; font: inherit; font-size: 12.5px; padding: 7px 10px; cursor: pointer; }
+  .seg button:last-child { border-right: 0; }
+  .seg button:hover { background: #f3f5f9; }
+  .scroll { overflow: auto; }
+  table.t { width: 100%; border-collapse: collapse; }
+  table.t th, table.t td { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+  table.t th { font-size: 12px; color: var(--muted); font-weight: 600; background: #fafbfd; white-space: nowrap; }
+  table.t tr.click:hover td { background: #f6f8ff; cursor: pointer; }
+  table.t tfoot td { font-weight: 700; background: #f8fafc; }
+  .num { text-align: right !important; font-variant-numeric: tabular-nums; }
+  .badge { display: inline-block; padding: 1px 8px; border-radius: 99px; font-size: 12px; background: #eef1f6; color: #374151; white-space: nowrap; font-weight: 500; }
+  .st-0 { background: #eef1f6; color: #4b5563; }
+  .st-1 { background: var(--pri-soft); color: var(--pri); }
+  .st-2 { background: var(--ok-soft); color: var(--ok); }
+  .st-3 { background: var(--bad-soft); color: var(--bad); text-decoration: line-through; }
+  .st-ok { background: var(--ok-soft); color: var(--ok); }
+  .chip { display: inline-block; padding: 1px 7px; border-radius: 5px; background: var(--pri-soft); color: var(--pri); font-size: 12px; margin: 1px 3px 1px 0; white-space: nowrap; }
+  .stars { color: var(--star); letter-spacing: 1px; white-space: nowrap; }
+  .stars .off { color: #d6dae2; }
+  .muted { color: var(--muted); }
+  .small { font-size: 12px; }
+  .ok { color: var(--ok); } .bad { color: var(--bad); } .warn { color: var(--warn); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px 14px; }
+  .span2 { grid-column: span 2; }
+  @media (max-width: 560px) { .span2 { grid-column: auto; } }
+  .pill { display: inline-flex; align-items: center; gap: 6px; border: 1px solid #cfd6e2; border-radius: 8px; padding: 7px 12px; margin: 0 8px 6px 0; cursor: pointer; background: #fff; }
+  .pill:has(input:checked) { border-color: var(--pri); background: var(--pri-soft); }
+  .progress { display: inline-block; min-width: 54px; text-align: center; padding: 1px 8px; border-radius: 6px; font-size: 12.5px; font-weight: 600; }
+  .progress.full { background: var(--ok-soft); color: var(--ok); }
+  .progress.part { background: var(--warn-soft); color: var(--warn); }
+  .datehead td { background: #f6f8fc; font-weight: 600; color: #334155; }
+
+  /* Phân công */
+  .ckblock { border: 1px solid var(--line); border-radius: 9px; margin-bottom: 12px; overflow: hidden; }
+  .ckhead { padding: 9px 12px; background: #f6f8fc; font-weight: 600; border-bottom: 1px solid var(--line); }
+  table.pc td, table.pc th { border-bottom: 1px solid #eef1f5; }
+  table.pc tr:last-child td { border-bottom: 0; }
+  .slot { position: relative; width: 100%; min-height: 44px; border-radius: 8px; padding: 6px 28px 6px 10px; text-align: left; font: inherit; }
+  .slot.empty { border: 1.5px dashed #b9c4d6; background: #fbfcfe; color: var(--pri); cursor: pointer; }
+  .slot.empty:hover { background: var(--pri-soft); border-color: var(--pri); }
+  .slot.full { border: 1px solid #cdd8ee; background: #f7faff; cursor: pointer; }
+  .slot.full:hover { border-color: var(--pri); }
+  .slot.full.warn { border-color: #f2c27b; background: var(--warn-soft); }
+  .slot.full.bad { border-color: #eba3a3; background: var(--bad-soft); }
+  .slot.na { color: #c3c9d4; text-align: center; padding: 10px; }
+  .slot .x { position: absolute; top: 4px; right: 4px; border: 0; background: none; font-size: 17px; line-height: 1; color: #94a3b8; cursor: pointer; padding: 2px 5px; border-radius: 5px; }
+  .slot .x:hover { color: var(--bad); background: #fff; }
+  .pk { display: grid; grid-template-columns: 1fr auto 80px 230px; gap: 10px; align-items: center; padding: 9px 10px; border-bottom: 1px solid var(--line); cursor: pointer; }
+  .pk:hover { background: #f6f8ff; }
+  .pk.cur { background: var(--pri-soft); }
+  .pk.dis { opacity: .5; cursor: not-allowed; }
+  .pk.dis:hover { background: none; }
+  .pks { font-size: 12.5px; }
+  .pks.ranh { color: var(--ok); } .pks.kiem { color: var(--pri); } .pks.ban { color: var(--warn); } .pks.trung, .pks.trungvt { color: var(--bad); }
+  @media (max-width: 700px) { .pk { grid-template-columns: 1fr auto; } }
+
+  /* Bảng phân công */
+  table.bang { border-collapse: collapse; min-width: 100%; }
+  table.bang th, table.bang td { border: 1px solid #d7dde8; padding: 7px 9px; vertical-align: top; text-align: left; min-width: 170px; }
+  table.bang th { background: #e7eefc; position: sticky; left: 0; min-width: 140px; z-index: 1; }
+  table.bang tr.h td { background: #f5f8ff; }
+  table.bang a { color: var(--pri); text-decoration: none; }
+  .thieu { color: var(--bad); font-size: 12px; margin-top: 3px; }
+
+  /* Modal, toast, loading */
+  .modal-bg { position: fixed; inset: 0; background: rgba(15, 23, 42, .45); display: flex; align-items: flex-start; justify-content: center; padding: 30px 12px; z-index: 50; overflow: auto; }
+  .modal { background: #fff; border-radius: 12px; width: 100%; max-width: 780px; box-shadow: 0 20px 50px rgba(0, 0, 0, .25); }
+  .modal.wide { max-width: 980px; }
+  .modal .mh { padding: 12px 16px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; font-weight: 600; gap: 10px; }
+  .modal .mb { padding: 16px; }
+  .modal .mf { padding: 12px 16px; border-top: 1px solid var(--line); display: flex; gap: 8px; }
+  .tabs2 { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin: 18px 0 12px; }
+  .tabs2 button { border: 0; background: none; padding: 8px 12px; font: inherit; color: var(--muted); border-bottom: 2px solid transparent; cursor: pointer; }
+  .tabs2 button.on { color: var(--pri); border-bottom-color: var(--pri); font-weight: 600; }
+  .starpick span { font-size: 24px; cursor: pointer; color: #d6dae2; padding-right: 2px; }
+  .starpick span.on { color: var(--star); }
+  #toast { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); z-index: 100; display: flex; flex-direction: column; gap: 8px; align-items: center; pointer-events: none; }
+  #toast div { background: #1f2937; color: #fff; padding: 10px 16px; border-radius: 9px; max-width: 640px; white-space: pre-line; box-shadow: 0 6px 20px rgba(0, 0, 0, .2); pointer-events: auto; }
+  #toast div.bad { background: #991b1b; }
+  #toast div.ok { background: #166534; }
+  #loading { position: fixed; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, transparent, var(--pri), transparent); background-size: 50% 100%; animation: ld 1s linear infinite; z-index: 200; display: none; }
+  @keyframes ld { from { background-position: -50% 0; } to { background-position: 150% 0; } }
+  .empty-state { padding: 30px; text-align: center; color: var(--muted); }
+
+  @media print {
+    header, .toolbar, .noprint, #toast { display: none !important; }
+    body { background: #fff; }
+    main { padding: 0; max-width: none; }
+    .card { border: 0; padding: 0; }
+    .scroll { overflow: visible; }
+    table.bang th { position: static; }
+  }
+</style>
+</head>
+<body>
+<div id="loading"></div>
+<header>
+  <div class="brand">🩺 Phân công đoàn khám</div>
+  <nav id="nav"></nav>
+  <div id="fileBox"></div>
+</header>
+<main id="main"><div class="empty-state">Đang khởi động…</div></main>
+<div id="toast"></div>
+<datalist id="dlHocVi"><option>BS</option><option>BSCKI</option><option>BSCKII</option><option>ThS.BS</option><option>TS.BS</option><option>PGS.TS</option></datalist>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+<script src="js/logic.js"></script>
+<script src="js/store.js"></script>
+<script>
+// ===================== TIỆN ÍCH CHUNG =====================
+const $ = (s, el) => (el || document).querySelector(s);
+const $$ = (s, el) => Array.from((el || document).querySelectorAll(s));
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const norm = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase();
+const pad = n => String(n).padStart(2, '0');
+const money = n => (Number(n) || 0).toLocaleString('vi-VN');
+const TT_NGUNG = 'Ngừng hợp tác';
+
+let S = { boot: null, tab: 'doan', r: null };
+let E = null; // trạng thái màn hình sửa đoàn
+const main = $('#main');
+
+let busyN = 0;
+function busy(d) { busyN = Math.max(0, busyN + d); $('#loading').style.display = busyN ? 'block' : 'none'; }
+
+function api(fn, ...args) {
+  busy(1);
+  return Kho.call(fn, args).then(
+    r => { busy(-1); return r; },
+    e => { busy(-1); toast((e && e.message) || String(e), 'bad'); throw e; });
+}
+
+function toast(msg, kind, ms) {
+  const d = document.createElement('div');
+  d.className = kind || '';
+  d.textContent = msg;
+  $('#toast').appendChild(d);
+  setTimeout(() => d.remove(), ms || (kind === 'bad' ? 7000 : 3500));
+}
+
+function modal(o) {
+  const bg = document.createElement('div');
+  bg.className = 'modal-bg';
+  bg.innerHTML = `<div class="modal ${o.wide ? 'wide' : ''}"><div class="mh"><span>${o.title}</span><button class="btn ghost" data-close>✕</button></div>
+    <div class="mb">${o.body}</div>${o.foot ? `<div class="mf">${o.foot}</div>` : ''}</div>`;
+  document.body.appendChild(bg);
+  const close = () => { bg.remove(); document.removeEventListener('keydown', onKey); };
+  const onKey = e => { if (e.key === 'Escape' && o.closeOnBg) close(); };
+  document.addEventListener('keydown', onKey);
+  bg.addEventListener('click', e => {
+    if (e.target.closest('[data-close]') || (o.closeOnBg && e.target === bg)) close();
+  });
+  return { el: bg, close };
+}
+
+function today() { const d = new Date(); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+function ymd(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+function thu(s) { return ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'][new Date(s + 'T00:00:00').getDay()]; }
+function fmtNgay(s) { if (!/^\d{4}-\d{2}-\d{2}$/.test(s || '')) return s || ''; return thu(s) + ', ' + s.slice(8, 10) + '/' + s.slice(5, 7) + '/' + s.slice(0, 4); }
+function monthRange(off) { const d = new Date(); const a = new Date(d.getFullYear(), d.getMonth() + off, 1); const b = new Date(d.getFullYear(), d.getMonth() + off + 1, 0); return { tu: ymd(a), den: ymd(b) }; }
+function weekRange() { const d = new Date(); const wd = (d.getDay() + 6) % 7; const a = new Date(d.getFullYear(), d.getMonth(), d.getDate() - wd); const b = new Date(a.getFullYear(), a.getMonth(), a.getDate() + 6); return { tu: ymd(a), den: ymd(b) }; }
+
+function splitList(s) { return String(s || '').split(',').map(x => x.trim()).filter(Boolean); }
+function khungList() { return S.boot.khung; }
+function tenKhung(k) { const x = S.boot.khung.find(z => z.ma === k); return x ? x.ten : k; }
+function gioKhung(k) { const x = S.boot.khung.find(z => z.ma === k); return x ? x.gio : ''; }
+function sortKhung(arr) { return S.boot.khung.map(k => k.ma).filter(k => arr.includes(k)); }
+function activeCK() { return S.boot.chuyenKhoa.filter(c => c.HoatDong !== '0'); }
+function ckTen(m) { const c = S.boot.chuyenKhoa.find(x => x.Ma === m); return c ? c.Ten : m; }
+function bsBy(ma) { return S.boot.bacSy.find(b => b.Ma === ma); }
+function stars(n) { n = Math.max(0, Math.min(5, Number(n) || 0)); return `<span class="stars">${'★'.repeat(n)}<span class="off">${'★'.repeat(5 - n)}</span></span>`; }
+function badgeTT(t) { return `<span class="badge st-${Math.max(0, S.boot.trangThaiDoan.indexOf(t))}">${esc(t)}</span>`; }
+
+function rangeHtml() {
+  return `<label class="f">Từ ngày<input type="date" id="rTu" value="${S.r.tu}"></label>
+    <label class="f">Đến ngày<input type="date" id="rDen" value="${S.r.den}"></label>
+    <div class="seg"><button data-rg="w">Tuần này</button><button data-rg="m0">Tháng này</button><button data-rg="m-1">Tháng trước</button><button data-rg="m1">Tháng sau</button></div>`;
+}
+function bindRange(onChange) {
+  const set = r => { S.r = r; $('#rTu').value = r.tu; $('#rDen').value = r.den; onChange(); };
+  $('#rTu').onchange = () => set({ tu: $('#rTu').value, den: S.r.den });
+  $('#rDen').onchange = () => set({ tu: S.r.tu, den: $('#rDen').value });
+  $$('[data-rg]').forEach(b => b.onclick = () => {
+    const v = b.dataset.rg;
+    set(v === 'w' ? weekRange() : monthRange(Number(v.slice(1))));
+  });
+}
+
+// ===================== ĐIỀU HƯỚNG =====================
+const TABS = [['doan', '📅 Lịch đoàn khám'], ['bang', '🗂 Bảng phân công'], ['baocao', '💰 Báo cáo công'], ['bacsy', '👨‍⚕️ Bác sỹ'], ['caidat', '⚙️ Cài đặt']];
+const VIEWS = {};
+
+function renderNav() {
+  const cur = S.tab === 'editor' ? 'doan' : S.tab;
+  $('#nav').innerHTML = TABS.map(t => `<button data-tab="${t[0]}" class="${t[0] === cur ? 'on' : ''}">${t[1]}</button>`).join('');
+  $$('#nav button').forEach(b => b.onclick = () => go(b.dataset.tab));
+}
+
+function go(tab, arg) {
+  if (S.tab === 'editor' && E && E.dirty && !confirm('Đoàn khám đang sửa chưa được lưu. Bỏ các thay đổi?')) return;
+  if (tab !== 'editor') E = null;
+  S.tab = tab;
+  renderNav();
+  window.scrollTo(0, 0);
+  VIEWS[tab](arg);
+}
+
+window.addEventListener('beforeunload', e => { if (E && E.dirty) { e.preventDefault(); e.returnValue = ''; } });
+
+// ===================== 1. LỊCH ĐOÀN KHÁM =====================
+VIEWS.doan = function () {
+  main.innerHTML = `<div class="card">
+    <div class="toolbar">${rangeHtml()}<span class="sp"></span><button class="btn pri" id="btnNew">+ Tạo đoàn khám</button></div>
+    <div id="dsDoan" class="empty-state">Đang tải…</div></div>`;
+  bindRange(loadDoan);
+  $('#btnNew').onclick = () => go('editor');
+  loadDoan();
+};
+
+async function loadDoan() {
+  const list = await api('listDoan', S.r.tu, S.r.den);
+  const el = $('#dsDoan');
+  if (!el) return;
+  if (!list.length) { el.className = 'empty-state'; el.innerHTML = 'Chưa có đoàn khám nào trong khoảng thời gian này.'; return; }
+  el.className = 'scroll';
+  let lastDate = '', rows = '';
+  list.forEach(d => {
+    if (d.Ngay !== lastDate) { lastDate = d.Ngay; rows += `<tr class="datehead"><td colspan="7">${fmtNgay(d.Ngay)}</td></tr>`; }
+    const full = d.soCan > 0 && d.soDaXep >= d.soCan;
+    rows += `<tr class="click" data-id="${esc(d.ID)}">
+      <td><b>${esc(d.TenDoan)}</b>${d.GhiChu ? `<div class="small muted">${esc(d.GhiChu)}</div>` : ''}</td>
+      <td>${esc(d.DiaDiem)}</td>
+      <td>${sortKhung(splitList(d.Buoi)).map(tenKhung).join(', ')}</td>
+      <td>${esc(d.TruongDoan)}</td>
+      <td class="num"><span class="progress ${full ? 'full' : 'part'}">${d.soDaXep}/${d.soCan}</span></td>
+      <td>${badgeTT(d.TrangThai)}</td>
+      <td class="num noprint"><button class="btn sm" data-edit="${esc(d.ID)}">Sửa</button> <button class="btn sm danger" data-del="${esc(d.ID)}">Xoá</button></td></tr>`;
+  });
+  el.innerHTML = `<table class="t"><thead><tr><th>Đoàn / đơn vị</th><th>Địa điểm</th><th>Buổi</th><th>Trưởng đoàn</th><th class="num">Đã xếp / cần</th><th>Trạng thái</th><th></th></tr></thead><tbody>${rows}</tbody></table>
+    <div class="small muted" style="margin-top:8px">${list.length} đoàn khám · bấm vào một dòng để sửa / phân công.</div>`;
+  el.onclick = async ev => {
+    const del = ev.target.closest('[data-del]');
+    if (del) {
+      const d = list.find(x => x.ID === del.dataset.del);
+      if (!confirm(`Xoá đoàn "${d.TenDoan}" ngày ${fmtNgay(d.Ngay)}?\nToàn bộ phân công của đoàn này cũng bị xoá. Nếu chỉ tạm dừng, hãy chuyển trạng thái sang "Huỷ".`)) return;
+      await api('deleteDoan', d.ID); toast('Đã xoá đoàn khám', 'ok'); loadDoan(); return;
+    }
+    const tr = ev.target.closest('[data-id]');
+    if (tr) go('editor', tr.dataset.id);
+  };
+}
+
+// ===================== 1b. TẠO / SỬA ĐOÀN & PHÂN CÔNG =====================
+const slotKey = (k, ck, i) => k + '|' + ck + '|' + i;
+function need(k, ck) { return (E.nc[k] && E.nc[k][ck]) || 0; }
+function setNeed(k, ck, v) { (E.nc[k] = E.nc[k] || {})[ck] = Math.max(0, Math.min(50, parseInt(v, 10) || 0)); }
+function ckEditor() { return S.boot.chuyenKhoa.filter(c => c.HoatDong !== '0' || E.buoi.some(k => need(k, c.Ma) > 0)); }
+
+VIEWS.editor = async function (id) {
+  if (id) {
+    main.innerHTML = '<div class="empty-state">Đang tải đoàn khám…</div>';
+    let d;
+    try { d = await api('getDoan', id); } catch (e) { return go('doan'); }
+    E = { doan: d.doan, buoi: sortKhung(splitList(d.doan.Buoi)), nc: {}, pc: {}, ctx: null, dirty: false };
+    d.nhuCau.forEach(x => setNeed(x.Khung, x.MaCK, x.SoLuong));
+    d.phanCong.forEach(p => { E.pc[slotKey(p.Khung, p.MaCK, p.ViTri)] = p.MaBS; });
+  } else {
+    E = { doan: { ID: '', TenDoan: '', DiaDiem: '', Ngay: today(), SoNguoi: '', TruongDoan: '', LienHe: '', GhiChu: '', TrangThai: 'Nháp' },
+      buoi: ['S'], nc: {}, pc: {}, ctx: null, dirty: false };
+  }
+  renderEditor();
+  loadCtx();
+};
+
+function fld(f, label, cls, type) {
+  return `<label class="f ${cls || ''}">${label}<input ${type ? `type="${type}" min="0"` : ''} data-f="${f}" value="${esc(E.doan[f])}" ${f === 'TruongDoan' ? 'list="dlBS"' : ''}></label>`;
+}
+
+function renderEditor() {
+  const d = E.doan;
+  main.innerHTML = `
+  <div class="toolbar" style="align-items:center">
+    <button class="btn" id="eBack">← Danh sách đoàn</button>
+    <h2 id="eTitle">${d.ID ? 'Sửa đoàn khám' : 'Tạo đoàn khám mới'}</h2>
+    <span class="sp"></span>
+    <span id="eDirty" class="small warn"></span>
+    ${d.ID ? '<button class="btn danger" id="eDel">Xoá đoàn</button>' : ''}
+    <button class="btn" id="eSaveBack">Lưu & về danh sách</button>
+    <button class="btn pri" id="eSave">💾 Lưu</button>
+  </div>
+  <div class="card"><h3>1. Thông tin đoàn</h3>
+    <div class="grid">
+      ${fld('TenDoan', 'Tên đoàn / đơn vị được khám *', 'span2')}
+      <label class="f">Ngày khám *<input type="date" data-f="Ngay" value="${esc(d.Ngay)}"></label>
+      <label class="f">Trạng thái<select data-f="TrangThai">${S.boot.trangThaiDoan.map(t => `<option ${t === d.TrangThai ? 'selected' : ''}>${t}</option>`).join('')}</select></label>
+      ${fld('DiaDiem', 'Địa điểm', 'span2')}
+      ${fld('SoNguoi', 'Số người dự kiến được khám', '', 'number')}
+      ${fld('TruongDoan', 'Trưởng đoàn')}
+      ${fld('LienHe', 'Người liên hệ (tên, SĐT)', 'span2')}
+      ${fld('GhiChu', 'Ghi chú', 'span2')}
+    </div>
+    <datalist id="dlBS">${S.boot.bacSy.filter(b => b.TrangThai !== TT_NGUNG).map(b => `<option value="${esc(b.HoTen)}">`).join('')}</datalist>
+    <div style="margin-top:14px"><div class="lbl">Các buổi khám *</div>
+      ${khungList().map(k => `<label class="pill"><input type="checkbox" data-buoi="${k.ma}" ${E.buoi.includes(k.ma) ? 'checked' : ''}><b>${k.ten}</b><span class="muted small">${k.gio}</span></label>`).join('')}
+    </div>
+  </div>
+  <div class="card"><h3>2. Số bác sỹ cần theo chuyên khoa và buổi</h3><div id="eNC"></div></div>
+  <div class="card"><h3>3. Phân công bác sỹ <span id="ePCsum" class="muted" style="font-weight:400"></span></h3>
+    <div class="small muted" style="margin:-6px 0 12px">Bấm vào ô để chọn bác sỹ. Danh sách gợi ý xếp theo: còn rảnh → nhiều sao hơn → đi khám nhiều hơn. Chọn bác sỹ cho 1 buổi sẽ tự điền cho các buổi khác cùng vị trí (nếu còn trống và bác sỹ rảnh).</div>
+    <div id="ePC"></div></div>`;
+
+  $$('[data-f]').forEach(inp => {
+    const ev = inp.tagName === 'SELECT' || inp.type === 'date' ? 'change' : 'input';
+    inp.addEventListener(ev, () => {
+      E.doan[inp.dataset.f] = inp.value;
+      markDirty();
+      if (inp.dataset.f === 'Ngay') { E.ctx = null; renderPC(); loadCtx(); }
+    });
+  });
+  $$('[data-buoi]').forEach(cb => cb.onchange = () => {
+    E.buoi = sortKhung($$('[data-buoi]').filter(x => x.checked).map(x => x.dataset.buoi));
+    markDirty(); renderNC(); renderPC();
+  });
+  $('#eBack').onclick = () => go('doan');
+  $('#eSave').onclick = () => luuDoan(false);
+  $('#eSaveBack').onclick = () => luuDoan(true);
+  if ($('#eDel')) $('#eDel').onclick = async () => {
+    if (!confirm('Xoá hẳn đoàn khám này và toàn bộ phân công? (Nếu chỉ tạm dừng hãy chọn trạng thái "Huỷ")')) return;
+    await api('deleteDoan', E.doan.ID); E.dirty = false; toast('Đã xoá đoàn khám', 'ok'); go('doan');
+  };
+  renderNC();
+  renderPC();
+}
+
+function markDirty() { E.dirty = true; const el = $('#eDirty'); if (el) el.textContent = '● Chưa lưu'; }
+
+async function loadCtx() {
+  const ngay = E && E.doan.Ngay;
+  if (!ngay) return;
+  try {
+    const c = await api('getNgayContext', ngay, E.doan.ID || '');
+    if (E && E.doan.Ngay === ngay) { E.ctx = c; renderPC(); }
+  } catch (e) { /* đã báo lỗi */ }
+}
+
+function renderNC() {
+  const el = $('#eNC');
+  if (!E.buoi.length) { el.innerHTML = '<div class="muted">Hãy chọn ít nhất 1 buổi khám ở mục 1.</div>'; return; }
+  const cks = ckEditor(), first = E.buoi[0];
+  el.innerHTML = `<div class="scroll"><table class="t" style="width:auto;min-width:420px"><thead><tr><th>Chuyên khoa</th>
+      ${E.buoi.map(k => `<th class="num" style="width:120px">${tenKhung(k)}</th>`).join('')}</tr></thead><tbody>
+      ${cks.map(c => `<tr><td>${esc(c.Ten)}</td>${E.buoi.map(k => `<td class="num"><input type="number" min="0" max="50" style="width:80px;text-align:right" class="ncin" data-k="${k}" data-ck="${esc(c.Ma)}" value="${need(k, c.Ma) || ''}" placeholder="0"></td>`).join('')}</tr>`).join('')}
+    </tbody></table></div>
+    ${E.buoi.length > 1 ? `<div style="margin-top:10px"><button class="btn sm" id="ncCopy">⇉ Các buổi khác giống buổi ${tenKhung(first)}</button></div>` : ''}`;
+  $$('.ncin', el).forEach(i => i.oninput = () => { setNeed(i.dataset.k, i.dataset.ck, i.value); markDirty(); renderPC(); });
+  if ($('#ncCopy')) $('#ncCopy').onclick = () => {
+    E.buoi.slice(1).forEach(k => cks.forEach(c => setNeed(k, c.Ma, need(first, c.Ma))));
+    markDirty(); renderNC(); renderPC();
+  };
+}
+
+/** Tình trạng của 1 bác sỹ nếu đặt vào ô (khung k, chuyên khoa ck, vị trí i). */
+function trangThaiBS(ma, k, ck, i) {
+  const c = E.ctx || { ban: [], daXep: [] };
+  const x = c.daXep.find(d => d.MaBS === ma && d.Khung === k);
+  if (x) return { loai: 'trung', text: `Đã xếp đoàn "${x.TenDoan}"` };
+  let khac = '';
+  for (const key in E.pc) {
+    if (E.pc[key] !== ma) continue;
+    const [kk, cc, ii] = key.split('|');
+    if (kk !== k || Number(ii) > need(kk, cc) || !E.buoi.includes(kk)) continue;
+    if (cc === ck && Number(ii) !== i) return { loai: 'trungvt', text: `Đã ở vị trí ${ii} của chuyên khoa này` };
+    if (cc !== ck) khac = cc;
+  }
+  const b = c.ban.find(z => z.MaBS === ma && z.Khung === k);
+  if (b) return { loai: 'ban', text: 'Lịch bận' + (b.LyDo ? ': ' + b.LyDo : '') };
+  if (khac) return { loai: 'kiem', text: `Kiêm ${ckTen(khac)} buổi này (tính 1 công)` };
+  return { loai: 'ranh', text: '' };
+}
+
+function renderPC() {
+  const el = $('#ePC');
+  if (!el) return;
+  let tong = 0, xep = 0;
+  const html = ckEditor().map(c => {
+    const max = Math.max(0, ...E.buoi.map(k => need(k, c.Ma)));
+    if (!max) return '';
+    let rows = '';
+    for (let i = 1; i <= max; i++) {
+      rows += `<tr><td class="muted small" style="width:70px;padding-top:20px">Vị trí ${i}</td>` + E.buoi.map(k => {
+        if (i > need(k, c.Ma)) return '<td><div class="slot na">—</div></td>';
+        tong++;
+        const key = slotKey(k, c.Ma, i), ma = E.pc[key];
+        if (!ma) return `<td><button class="slot empty" data-pick="${esc(key)}">+ Chọn bác sỹ</button></td>`;
+        xep++;
+        const b = bsBy(ma) || { HoTen: ma, Sao: 0 };
+        const st = E.ctx ? trangThaiBS(ma, k, c.Ma, i) : { loai: 'ranh', text: '' };
+        const cls = st.loai === 'ban' ? 'warn' : (st.loai === 'trung' || st.loai === 'trungvt') ? 'bad' : '';
+        return `<td><div class="slot full ${cls}" data-pick="${esc(key)}"><div><b>${esc(b.HoTen)}</b> ${stars(b.Sao)}</div>
+          ${st.text ? `<div class="small ${cls || 'muted'}">${esc(st.text)}</div>` : ''}
+          <button class="x" data-clear="${esc(key)}" title="Bỏ chọn">×</button></div></td>`;
+      }).join('') + '</tr>';
+    }
+    return `<div class="ckblock"><div class="ckhead">${esc(c.Ten)} <span class="muted small" style="font-weight:400">— cần ${E.buoi.map(k => tenKhung(k) + ': ' + need(k, c.Ma)).join(' · ')}</span></div>
+      <div class="scroll"><table class="t pc"><thead><tr><th></th>${E.buoi.map(k => `<th>${tenKhung(k)} <span style="font-weight:400">${gioKhung(k)}</span></th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div></div>`;
+  }).join('');
+  el.innerHTML = html || '<div class="muted">Nhập số bác sỹ cần ở mục 2 để bắt đầu phân công.</div>';
+  $('#ePCsum').innerHTML = tong ? `— đã xếp <b class="${xep >= tong ? 'ok' : 'warn'}">${xep}/${tong}</b> vị trí` : '';
+  el.onclick = ev => {
+    const x = ev.target.closest('[data-clear]');
+    if (x) { delete E.pc[x.dataset.clear]; markDirty(); renderPC(); return; }
+    const p = ev.target.closest('[data-pick]');
+    if (p) { const [k, ck, i] = p.dataset.pick.split('|'); openPicker(k, ck, Number(i)); }
+  };
+}
+
+function openPicker(k, ck, i) {
+  if (!E.ctx) { toast('Đang tải lịch của ngày này, thử lại sau giây lát…'); return; }
+  const cur = E.pc[slotKey(k, ck, i)];
+  const soBuoi = E.ctx.soBuoi || {};
+  const rank = { ranh: 0, kiem: 0, ban: 1, trungvt: 2, trung: 2 };
+  const items = S.boot.bacSy
+    .filter(b => b.TrangThai !== TT_NGUNG && splitList(b.ChuyenKhoa).includes(ck))
+    .map(b => ({ b, st: trangThaiBS(b.Ma, k, ck, i), n: soBuoi[b.Ma] || 0 }));
+  items.sort((x, y) => rank[x.st.loai] - rank[y.st.loai] || (Number(y.b.Sao) || 0) - (Number(x.b.Sao) || 0) || y.n - x.n || x.b.HoTen.localeCompare(y.b.HoTen, 'vi'));
+  let g = 0;
+  items.forEach(it => { it.ok = rank[it.st.loai] < 2; if (rank[it.st.loai] === 0 && it.b.Ma !== cur && g < 3) { it.goiY = true; g++; } });
+  const soNgay = S.boot.cauHinh.SoNgayTinhChamChi || 90;
+  const m = modal({
+    title: `Chọn bác sỹ · ${esc(ckTen(ck))} · Buổi ${tenKhung(k)} (${gioKhung(k)}) · Vị trí ${i}`,
+    wide: true, closeOnBg: true,
+    body: `<div class="toolbar" style="align-items:center"><input id="pkQ" placeholder="Tìm theo tên hoặc mã…" style="flex:1;min-width:200px">
+      <span class="small muted">Cột "buổi" = số buổi đã khám trong ${soNgay} ngày trước ngày khám</span></div>
+      <div id="pkL" style="border-top:1px solid var(--line)"></div>`,
+  });
+  const draw = () => {
+    const q = norm($('#pkQ', m.el).value);
+    const rows = items.filter(it => !q || norm(it.b.HoTen + ' ' + it.b.Ma).includes(q));
+    $('#pkL', m.el).innerHTML = rows.map(it => `<div class="pk ${it.ok ? '' : 'dis'} ${it.b.Ma === cur ? 'cur' : ''}" data-ma="${it.ok ? esc(it.b.Ma) : ''}">
+        <div><b>${esc(it.b.HoTen)}</b> <span class="muted small">${esc(it.b.HocVi)} · ${esc(it.b.Ma)}</span>
+          ${it.goiY ? ' <span class="badge st-ok">Gợi ý</span>' : ''}${it.b.Ma === cur ? ' <span class="badge st-1">Đang chọn</span>' : ''}</div>
+        <div>${stars(it.b.Sao)}</div>
+        <div class="num small muted">${it.n} buổi</div>
+        <div class="pks ${it.st.loai}">${esc(it.st.text || '✓ Rảnh')}</div></div>`).join('')
+      || `<div class="empty-state">Không có bác sỹ nào thuộc chuyên khoa "${esc(ckTen(ck))}"${q ? ' khớp tìm kiếm' : ''}.<br>Kiểm tra chuyên khoa của bác sỹ ở mục Bác sỹ.</div>`;
+  };
+  draw();
+  $('#pkQ', m.el).oninput = draw;
+  $('#pkQ', m.el).focus();
+  $('#pkL', m.el).onclick = ev => {
+    const r = ev.target.closest('.pk');
+    if (!r || !r.dataset.ma) return;
+    m.close();
+    chonBS(k, ck, i, r.dataset.ma);
+  };
+}
+
+function chonBS(k, ck, i, ma) {
+  E.pc[slotKey(k, ck, i)] = ma;
+  const filled = [];
+  E.buoi.forEach(k2 => {
+    if (k2 === k || i > need(k2, ck) || E.pc[slotKey(k2, ck, i)]) return;
+    const st = trangThaiBS(ma, k2, ck, i);
+    if (st.loai === 'ranh' || st.loai === 'kiem') { E.pc[slotKey(k2, ck, i)] = ma; filled.push(tenKhung(k2)); }
+  });
+  markDirty();
+  renderPC();
+  if (filled.length) toast(`Đã tự điền ${(bsBy(ma) || {}).HoTen} cho buổi ${filled.join(', ')}. Có thể đổi lại nếu cần.`);
+}
+
+async function luuDoan(veDanhSach) {
+  const d = E.doan;
+  if (!String(d.TenDoan).trim()) return toast('Chưa nhập tên đoàn / đơn vị.', 'bad');
+  if (!d.Ngay) return toast('Chưa chọn ngày khám.', 'bad');
+  if (!E.buoi.length) return toast('Chọn ít nhất 1 buổi khám.', 'bad');
+  const nhuCau = [], phanCong = [], canhBao = [];
+  let tong = 0;
+  E.buoi.forEach(k => S.boot.chuyenKhoa.forEach(c => {
+    const n = need(k, c.Ma);
+    if (!n) return;
+    tong += n;
+    nhuCau.push({ Khung: k, MaCK: c.Ma, SoLuong: n });
+    for (let i = 1; i <= n; i++) {
+      const ma = E.pc[slotKey(k, c.Ma, i)];
+      if (!ma) continue;
+      phanCong.push({ Khung: k, MaCK: c.Ma, ViTri: i, MaBS: ma });
+      if (E.ctx) {
+        const st = trangThaiBS(ma, k, c.Ma, i);
+        if (st.loai === 'ban') canhBao.push(`• ${(bsBy(ma) || {}).HoTen} – buổi ${tenKhung(k)}: ${st.text}`);
+      }
+    }
+  }));
+  if (canhBao.length && !confirm('Có bác sỹ đã báo bận:\n' + canhBao.join('\n') + '\n\nVẫn lưu?')) return;
+  if (d.TrangThai !== 'Nháp' && d.TrangThai !== 'Huỷ' && phanCong.length < tong &&
+      !confirm(`Còn ${tong - phanCong.length} vị trí chưa xếp bác sỹ. Vẫn lưu với trạng thái "${d.TrangThai}"?`)) return;
+  $('#eSave').disabled = $('#eSaveBack').disabled = true;
+  try {
+    const res = await api('saveDoan', { doan: Object.assign({}, d, { Buoi: E.buoi.join(',') }), nhuCau, phanCong });
+    const moi = !E.doan.ID;
+    E.doan.ID = res.ID;
+    E.dirty = false;
+    toast('Đã lưu đoàn khám.', 'ok');
+    if (veDanhSach) { go('doan'); return; }
+    if (moi) renderEditor(); else { $('#eDirty').textContent = ''; }
+  } catch (e) { /* đã báo lỗi */ }
+  const b1 = $('#eSave'), b2 = $('#eSaveBack');
+  if (b1) b1.disabled = false;
+  if (b2) b2.disabled = false;
+}
+
+// ===================== 2. BẢNG PHÂN CÔNG =====================
+let bangTT = null;
+VIEWS.bang = function () {
+  if (!bangTT) bangTT = S.boot.trangThaiDoan.filter(t => t !== 'Huỷ');
+  main.innerHTML = `<div class="card">
+    <div class="toolbar">${rangeHtml()}
+      <div><div class="lbl">Trạng thái đoàn</div>${S.boot.trangThaiDoan.map(t => `<label class="pill" style="padding:5px 9px;margin-bottom:0"><input type="checkbox" data-tt="${t}" ${bangTT.includes(t) ? 'checked' : ''}>${t}</label>`).join('')}</div>
+      <span class="sp"></span>
+      <button class="btn" id="bIn">🖨 In</button>
+      <button class="btn pri" id="bXuat">⬇ Xuất Excel</button>
+    </div>
+    <div id="bangOut" class="empty-state">Đang tải…</div></div>`;
+  bindRange(loadBang);
+  $$('[data-tt]').forEach(cb => cb.onchange = () => { bangTT = $$('[data-tt]').filter(x => x.checked).map(x => x.dataset.tt); loadBang(); });
+  $('#bIn').onclick = () => window.print();
+  $('#bXuat').onclick = async () => {
+    try { await api('xuatBangPhanCong', S.r.tu, S.r.den, bangTT); toast('Đã tải file Excel bảng phân công.', 'ok'); } catch (e) { /* đã báo lỗi */ }
+  };
+  loadBang();
+};
+
+async function loadBang() {
+  const data = await api('getBangPhanCong', S.r.tu, S.r.den, bangTT);
+  const el = $('#bangOut');
+  if (!el) return;
+  if (!data.cot.length) { el.className = 'empty-state'; el.innerHTML = 'Không có đoàn nào trong khoảng thời gian / trạng thái đã chọn.'; return; }
+  el.className = 'scroll';
+  const head = (label, fn) => `<tr class="h"><th>${label}</th>${data.cot.map(c => `<td>${fn(c)}</td>`).join('')}</tr>`;
+  el.innerHTML = `<h3 style="margin:0 0 10px">BẢNG PHÂN CÔNG ĐOÀN KHÁM (${fmtNgay(data.tu)} – ${fmtNgay(data.den)})</h3>
+    <table class="bang">
+    ${head('Tên đoàn', c => `<a href="#" data-open="${esc(c.doan.ID)}"><b>${esc(c.doan.TenDoan)}</b></a> <span class="noprint">${badgeTT(c.doan.TrangThai)}</span>`)}
+    ${head('Ngày', c => esc(fmtNgay(c.doan.Ngay)))}
+    ${head('Địa điểm', c => esc(c.doan.DiaDiem))}
+    ${head('Buổi', c => esc(c.buoiText))}
+    ${head('Số người dự kiến', c => esc(c.doan.SoNguoi))}
+    ${head('Trưởng đoàn', c => esc(c.doan.TruongDoan))}
+    ${data.chuyenKhoa.map(ck => `<tr><th>${esc(ck.Ten)}</th>${data.cot.map(c => `<td>${esc(c.o[ck.Ma]).replace(/\n/g, '<br>')}${c.thieu[ck.Ma] ? `<div class="thieu noprint">Thiếu: ${esc(c.thieu[ck.Ma])}</div>` : ''}</td>`).join('')}</tr>`).join('')}
+    </table>
+    <div class="small muted noprint" style="margin-top:8px">${data.cot.length} đoàn · (S) sáng, (C) chiều, (T) tối · bấm tên đoàn để sửa.</div>`;
+  el.onclick = ev => { const a = ev.target.closest('[data-open]'); if (a) { ev.preventDefault(); go('editor', a.dataset.open); } };
+}
+
+// ===================== 3. BÁO CÁO CÔNG =====================
+let bcDaChot = false;
+VIEWS.baocao = function () {
+  main.innerHTML = `<div class="card">
+    <div class="toolbar">${rangeHtml()}
+      <label class="pill" style="margin-bottom:0"><input type="checkbox" id="bcChot" ${bcDaChot ? 'checked' : ''}>Tính cả đoàn "Đã chốt" (chưa hoàn thành)</label>
+      <span class="sp"></span>
+      <button class="btn pri" id="bcXuat">⬇ Xuất Excel</button>
+    </div>
+    <div class="small muted" style="margin:-4px 0 10px">Mặc định chỉ tính các đoàn có trạng thái "Hoàn thành". Mỗi bác sỹ × mỗi buổi × mỗi đoàn = 1 công (kiêm nhiều chuyên khoa vẫn 1 công).</div>
+    <div id="bcOut" class="empty-state">Đang tải…</div></div>`;
+  bindRange(loadBC);
+  $('#bcChot').onchange = () => { bcDaChot = $('#bcChot').checked; loadBC(); };
+  $('#bcXuat').onclick = async () => {
+    try { await api('xuatBaoCao', S.r.tu, S.r.den, bcDaChot); toast('Đã tải file Excel (2 trang: tổng hợp và chi tiết).', 'ok'); } catch (e) { /* đã báo lỗi */ }
+  };
+  loadBC();
+};
+
+async function loadBC() {
+  const d = await api('getBaoCao', S.r.tu, S.r.den, bcDaChot);
+  const el = $('#bcOut');
+  if (!el) return;
+  if (!d.tongHop.length) { el.className = 'empty-state'; el.innerHTML = 'Không có công khám nào trong khoảng thời gian này.<br><span class="small">Lưu ý: đoàn phải ở trạng thái "Hoàn thành" mới được tính công.</span>'; return; }
+  el.className = 'scroll';
+  const sum = f => d.tongHop.reduce((s, t) => s + t[f], 0);
+  el.innerHTML = `<table class="t"><thead><tr><th>#</th><th>Bác sỹ</th><th>Học vị</th><th>Số tài khoản</th><th class="num">Sáng</th><th class="num">Chiều</th><th class="num">Tối</th><th class="num">Tổng buổi</th><th class="num">Thành tiền (đ)</th></tr></thead>
+    <tbody>${d.tongHop.map((t, i) => `<tr class="click" data-ma="${esc(t.MaBS)}"><td class="muted">${i + 1}</td><td><b>${esc(t.HoTen)}</b> <span class="muted small">${esc(t.MaBS)}</span></td><td>${esc(t.HocVi)}</td>
+      <td>${esc(t.SoTaiKhoan)}${t.NganHang ? ` <span class="muted small">${esc(t.NganHang)}</span>` : ''}</td>
+      <td class="num">${t.S || ''}</td><td class="num">${t.C || ''}</td><td class="num">${t.T || ''}</td><td class="num"><b>${t.Tong}</b></td><td class="num">${money(t.ThanhTien)}</td></tr>
+      <tr class="ct" data-ct="${esc(t.MaBS)}" hidden><td></td><td colspan="8"></td></tr>`).join('')}</tbody>
+    <tfoot><tr><td></td><td>Tổng cộng (${d.tongHop.length} bác sỹ)</td><td></td><td></td><td class="num">${sum('S')}</td><td class="num">${sum('C')}</td><td class="num">${sum('T')}</td><td class="num">${sum('Tong')}</td><td class="num">${money(sum('ThanhTien'))}</td></tr></tfoot></table>
+    <div class="small muted" style="margin-top:8px">Bấm vào một bác sỹ để xem chi tiết từng buổi.</div>`;
+  el.onclick = ev => {
+    const tr = ev.target.closest('tr.click');
+    if (!tr) return;
+    const ct = $(`tr[data-ct="${CSS.escape(tr.dataset.ma)}"]`, el);
+    if (!ct.hidden) { ct.hidden = true; return; }
+    const rows = d.chiTiet.filter(c => c.MaBS === tr.dataset.ma);
+    ct.lastElementChild.innerHTML = `<table class="t" style="background:#fbfcfe"><thead><tr><th>Ngày</th><th>Buổi</th><th>Đoàn</th><th>Địa điểm</th><th>Chuyên khoa</th><th class="num">Đơn giá</th></tr></thead><tbody>
+      ${rows.map(c => `<tr><td>${fmtNgay(c.Ngay)}</td><td>${tenKhung(c.Khung)}</td><td>${esc(c.TenDoan)}${c.TrangThai !== 'Hoàn thành' ? ' ' + badgeTT(c.TrangThai) : ''}</td><td>${esc(c.DiaDiem)}</td><td>${esc(c.ChuyenKhoa)}</td><td class="num">${money(c.DonGia)}</td></tr>`).join('')}</tbody></table>`;
+    ct.hidden = false;
+  };
+}
+
+// ===================== 4. BÁC SỸ =====================
+let bsLoc = { q: '', ck: '', tt: 'Đang hợp tác' };
+VIEWS.bacsy = function () {
+  main.innerHTML = `<div class="card">
+    <div class="toolbar">
+      <label class="f">Tìm kiếm<input id="bsQ" placeholder="Tên, mã, SĐT…" value="${esc(bsLoc.q)}" style="width:220px"></label>
+      <label class="f">Chuyên khoa<select id="bsCK"><option value="">Tất cả</option>${S.boot.chuyenKhoa.map(c => `<option value="${esc(c.Ma)}" ${c.Ma === bsLoc.ck ? 'selected' : ''}>${esc(c.Ten)}</option>`).join('')}</select></label>
+      <label class="f">Trạng thái<select id="bsTT"><option value="">Tất cả</option>${S.boot.trangThaiBS.map(t => `<option ${t === bsLoc.tt ? 'selected' : ''}>${t}</option>`).join('')}</select></label>
+      <span class="sp"></span><button class="btn pri" id="bsNew">+ Thêm bác sỹ</button>
+    </div><div id="bsOut"></div></div>`;
+  $('#bsQ').oninput = () => { bsLoc.q = $('#bsQ').value; drawBS(); };
+  $('#bsCK').onchange = () => { bsLoc.ck = $('#bsCK').value; drawBS(); };
+  $('#bsTT').onchange = () => { bsLoc.tt = $('#bsTT').value; drawBS(); };
+  $('#bsNew').onclick = () => moBacSy(null);
+  drawBS();
+};
+
+function drawBS() {
+  const el = $('#bsOut');
+  if (!el) return;
+  const q = norm(bsLoc.q);
+  const list = S.boot.bacSy
+    .filter(b => (!bsLoc.tt || b.TrangThai === bsLoc.tt) && (!bsLoc.ck || splitList(b.ChuyenKhoa).includes(bsLoc.ck)) && (!q || norm(b.HoTen + ' ' + b.Ma + ' ' + b.SDT).includes(q)))
+    .sort((a, b) => a.Ma.localeCompare(b.Ma));
+  if (!list.length) { el.innerHTML = '<div class="empty-state">Không có bác sỹ nào. Bấm "+ Thêm bác sỹ" để bắt đầu.</div>'; return; }
+  el.innerHTML = `<div class="scroll"><table class="t"><thead><tr><th>Mã</th><th>Họ tên</th><th>Học vị</th><th>Chuyên khoa</th><th>Ưu tiên</th><th>Số điện thoại</th><th>Trạng thái</th></tr></thead><tbody>
+    ${list.map(b => `<tr class="click" data-ma="${esc(b.Ma)}"><td class="muted">${esc(b.Ma)}</td><td><b>${esc(b.HoTen)}</b>${b.GhiChu ? `<div class="small muted">${esc(b.GhiChu)}</div>` : ''}</td><td>${esc(b.HocVi)}</td>
+      <td>${splitList(b.ChuyenKhoa).map(m => `<span class="chip">${esc(ckTen(m))}</span>`).join('')}</td><td>${stars(b.Sao)}</td><td>${esc(b.SDT)}</td>
+      <td>${b.TrangThai === TT_NGUNG ? `<span class="badge st-3" style="text-decoration:none">${esc(b.TrangThai)}</span>` : `<span class="badge st-2">${esc(b.TrangThai)}</span>`}</td></tr>`).join('')}
+    </tbody></table></div><div class="small muted" style="margin-top:8px">${list.length} / ${S.boot.bacSy.length} bác sỹ</div>`;
+  el.onclick = ev => { const tr = ev.target.closest('[data-ma]'); if (tr) moBacSy(tr.dataset.ma); };
+}
+
+function moBacSy(ma) {
+  const b = ma ? Object.assign({}, bsBy(ma)) : { Ma: '', HoTen: '', SDT: '', HocVi: '', SoTaiKhoan: '', NganHang: '', ChuyenKhoa: '', Sao: '3', TrangThai: 'Đang hợp tác', GhiChu: '' };
+  const cks = splitList(b.ChuyenKhoa);
+  const inp = (f, label, extra) => `<label class="f">${label}<input data-b="${f}" value="${esc(b[f])}" ${extra || ''}></label>`;
+  const m = modal({
+    title: ma ? `Bác sỹ ${esc(b.HoTen)}` : 'Thêm bác sỹ', wide: true,
+    body: `<div class="grid">
+        ${inp('Ma', 'Mã bác sỹ', ma ? 'disabled' : 'placeholder="Để trống: tự tạo (BS001…)"')}
+        ${inp('HoTen', 'Họ tên *')}
+        ${inp('HocVi', 'Học vị', 'list="dlHocVi"')}
+        ${inp('SDT', 'Số điện thoại')}
+        ${inp('SoTaiKhoan', 'Số tài khoản ngân hàng')}
+        ${inp('NganHang', 'Ngân hàng')}
+        <label class="f">Trạng thái<select data-b="TrangThai">${S.boot.trangThaiBS.map(t => `<option ${t === b.TrangThai ? 'selected' : ''}>${t}</option>`).join('')}</select></label>
+        <div><div class="lbl">Mức ưu tiên</div><div class="starpick" id="starPick">${[1, 2, 3, 4, 5].map(n => `<span data-s="${n}">★</span>`).join('')}</div></div>
+      </div>
+      <div style="margin-top:12px"><div class="lbl">Chuyên khoa có thể khám *</div>
+        ${S.boot.chuyenKhoa.filter(c => c.HoatDong !== '0' || cks.includes(c.Ma)).map(c => `<label class="pill"><input type="checkbox" data-ck="${esc(c.Ma)}" ${cks.includes(c.Ma) ? 'checked' : ''}>${esc(c.Ten)}</label>`).join('')}
+      </div>
+      <label class="f" style="margin-top:6px">Ghi chú<textarea data-b="GhiChu" rows="2">${esc(b.GhiChu)}</textarea></label>
+      ${ma ? `<div class="tabs2"><button data-t2="ban" class="on">Lịch bận</button><button data-t2="ls">Lịch sử khám</button></div><div id="t2Out"></div>`
+        : '<div class="small muted" style="margin-top:12px">Lưu bác sỹ trước, sau đó mở lại để nhập lịch bận.</div>'}`,
+    foot: `${ma ? '<button class="btn danger" id="bsDel">Xoá</button>' : ''}<span class="sp"></span><button class="btn" data-close>Đóng</button><button class="btn pri" id="bsSave">💾 Lưu</button>`,
+  });
+  let sao = Number(b.Sao) || 3;
+  const drawStar = () => $$('#starPick span').forEach(s => s.classList.toggle('on', Number(s.dataset.s) <= sao));
+  drawStar();
+  $$('#starPick span').forEach(s => s.onclick = () => { sao = Number(s.dataset.s); drawStar(); });
+
+  $('#bsSave').onclick = async () => {
+    const o = Object.assign({}, b);
+    $$('[data-b]', m.el).forEach(i => { o[i.dataset.b] = i.value; });
+    o.Sao = sao;
+    o.ChuyenKhoa = $$('[data-ck]', m.el).filter(x => x.checked).map(x => x.dataset.ck).join(',');
+    if (!o.HoTen.trim()) return toast('Chưa nhập họ tên.', 'bad');
+    if (!o.ChuyenKhoa) return toast('Chọn ít nhất 1 chuyên khoa.', 'bad');
+    try {
+      const r = await api('saveBacSy', o, !ma);
+      S.boot.bacSy = r.bacSy;
+      toast('Đã lưu bác sỹ ' + o.HoTen + ' (' + r.ma + ').', 'ok');
+      m.close(); drawBS();
+    } catch (e) { /* đã báo lỗi */ }
+  };
+  if (!ma) return;
+  $('#bsDel').onclick = async () => {
+    if (!confirm('Xoá hẳn bác sỹ ' + b.HoTen + '?')) return;
+    try { const r = await api('deleteBacSy', ma); S.boot.bacSy = r.bacSy; toast('Đã xoá.', 'ok'); m.close(); drawBS(); } catch (e) { /* đã báo lỗi */ }
+  };
+  const showT2 = t => {
+    $$('[data-t2]', m.el).forEach(x => x.classList.toggle('on', x.dataset.t2 === t));
+    if (t === 'ban') veLichBan(ma); else veLichSu(ma);
+  };
+  $$('[data-t2]', m.el).forEach(x => x.onclick = () => showT2(x.dataset.t2));
+  showT2('ban');
+}
+
+async function veLichBan(ma, list) {
+  const el = $('#t2Out');
+  if (!list) { el.innerHTML = '<div class="muted">Đang tải…</div>'; list = await api('getLichBan', ma); }
+  el.innerHTML = `<div class="toolbar">
+      <label class="f">Ngày bận<input type="date" id="lbNgay" value="${today()}"></label>
+      <div><div class="lbl">Khung giờ</div>${khungList().map(k => `<label class="pill" style="padding:5px 9px;margin-bottom:0"><input type="checkbox" data-lbk="${k.ma}" checked>${k.ten}</label>`).join('')}</div>
+      <label class="f" style="flex:1;min-width:160px">Lý do<input id="lbLyDo" placeholder="Nghỉ phép, trực, công tác…"></label>
+      <button class="btn pri" id="lbAdd">+ Thêm</button></div>
+    ${list.length ? `<table class="t"><thead><tr><th>Ngày</th><th>Khung giờ</th><th>Lý do</th><th></th></tr></thead><tbody>
+      ${list.map(x => `<tr${x.Ngay < today() ? ' class="muted"' : ''}><td>${fmtNgay(x.Ngay)}</td><td>${tenKhung(x.Khung)}</td><td>${esc(x.LyDo)}</td><td class="num"><button class="btn sm danger" data-lbdel="${esc(x.ID)}">Xoá</button></td></tr>`).join('')}
+      </tbody></table>` : '<div class="muted">Chưa có lịch bận.</div>'}`;
+  $('#lbAdd').onclick = async () => {
+    const k = $$('[data-lbk]').filter(x => x.checked).map(x => x.dataset.lbk);
+    try { const l = await api('addLichBan', { MaBS: ma, Ngay: $('#lbNgay').value, Khungs: k, LyDo: $('#lbLyDo').value }); toast('Đã thêm lịch bận.', 'ok'); veLichBan(ma, l); } catch (e) { /* đã báo lỗi */ }
+  };
+  $$('[data-lbdel]').forEach(b => b.onclick = async () => { const l = await api('deleteLichBan', b.dataset.lbdel, ma); veLichBan(ma, l); });
+}
+
+async function veLichSu(ma) {
+  const el = $('#t2Out');
+  el.innerHTML = '<div class="muted">Đang tải…</div>';
+  const list = await api('getLichSuBS', ma);
+  if (!$('#t2Out')) return;
+  el.innerHTML = list.length ? `<div class="small muted" style="margin-bottom:6px">${list.length} buổi (không tính đoàn Huỷ)</div>
+    <div style="max-height:320px;overflow:auto"><table class="t"><thead><tr><th>Ngày</th><th>Buổi</th><th>Đoàn</th><th>Chuyên khoa</th><th>Trạng thái</th></tr></thead><tbody>
+    ${list.map(x => `<tr><td>${fmtNgay(x.Ngay)}</td><td>${tenKhung(x.Khung)}</td><td>${esc(x.TenDoan)}<div class="small muted">${esc(x.DiaDiem)}</div></td><td>${esc(x.ck)}</td><td>${badgeTT(x.TrangThai)}</td></tr>`).join('')}
+    </tbody></table></div>` : '<div class="muted">Bác sỹ chưa được phân công buổi nào.</div>';
+}
+
+// ===================== 5. CÀI ĐẶT =====================
+VIEWS.caidat = function () {
+  const ck = S.boot.chuyenKhoa.map(c => Object.assign({}, c));
+  const dg = S.boot.donGia.map(g => Object.assign({}, g));
+  main.innerHTML = `
+  <div class="card"><h3>Chuyên khoa</h3><div id="ckOut"></div>
+    <div class="toolbar" style="margin:10px 0 0"><button class="btn" id="ckAdd">+ Thêm chuyên khoa</button><span class="sp"></span><button class="btn pri" id="ckSave">💾 Lưu chuyên khoa</button></div></div>
+  <div class="card"><h3>Đơn giá công khám</h3>
+    <div class="small muted" style="margin:-6px 0 10px">Hiện tại dùng 1 giá chung cho từng khung giờ. Sau này có thể thêm dòng giá riêng theo chuyên khoa, hoặc dòng giá mới "áp dụng từ ngày" — các buổi khám trước ngày đó vẫn giữ giá cũ. Dòng cụ thể hơn (đúng chuyên khoa) được ưu tiên.</div>
+    <div id="dgOut"></div>
+    <div class="toolbar" style="margin:10px 0 0"><button class="btn" id="dgAdd">+ Thêm dòng giá</button><span class="sp"></span><button class="btn pri" id="dgSave">💾 Lưu đơn giá</button></div></div>
+  <div class="card"><h3>Gợi ý bác sỹ</h3>
+    <div class="toolbar"><label class="f">Đếm số buổi đã khám trong bao nhiêu ngày gần nhất<input type="number" min="7" id="chNgay" value="${esc(S.boot.cauHinh.SoNgayTinhChamChi)}" style="width:120px"></label>
+    <button class="btn pri" id="chSave">💾 Lưu</button></div></div>
+  <div class="card"><h3>File dữ liệu</h3>
+    <div class="small muted" style="margin:-6px 0 10px">Đang dùng: <b>${esc(Kho.tenFile)}</b>. ${Kho.ghiThang ? 'Mọi thay đổi được lưu thẳng vào file này.' : 'Trình duyệt này không ghi thẳng được vào file – nhớ bấm “Tải file dữ liệu” sau khi sửa.'} Nên tạo bản sao lưu định kỳ (ví dụ mỗi tuần).</div>
+    <div class="toolbar"><button class="btn" id="fBackup">⬇ Tải bản sao lưu</button><button class="btn" id="fDoi">📂 Đổi file dữ liệu khác</button></div></div>`;
+  $('#fBackup').onclick = () => Kho.taiVe('SaoLuu_' + today() + '_' + Kho.tenFile);
+  $('#fDoi').onclick = doiFile;
+
+  const drawCK = () => {
+    $('#ckOut').innerHTML = `<table class="t" style="max-width:720px"><thead><tr><th style="width:110px">Mã</th><th>Tên chuyên khoa</th><th style="width:90px">Thứ tự</th><th style="width:90px">Hoạt động</th><th></th></tr></thead><tbody>
+      ${ck.map((c, i) => `<tr><td><input data-ck-i="${i}" data-k="Ma" value="${esc(c.Ma)}" style="width:90px" ${c._moi ? '' : 'disabled'}></td>
+        <td><input data-ck-i="${i}" data-k="Ten" value="${esc(c.Ten)}" style="width:100%"></td>
+        <td><input type="number" data-ck-i="${i}" data-k="ThuTu" value="${esc(c.ThuTu)}" style="width:70px"></td>
+        <td><input type="checkbox" data-ck-i="${i}" data-k="HoatDong" ${c.HoatDong !== '0' ? 'checked' : ''}></td>
+        <td class="num"><button class="btn sm danger" data-ckdel="${i}">Xoá</button></td></tr>`).join('')}</tbody></table>`;
+    $$('[data-ck-i]').forEach(inp => inp.onchange = () => {
+      const c = ck[Number(inp.dataset.ckI)];
+      c[inp.dataset.k] = inp.type === 'checkbox' ? (inp.checked ? '1' : '0') : inp.value;
+    });
+    $$('[data-ckdel]').forEach(b => b.onclick = () => { ck.splice(Number(b.dataset.ckdel), 1); drawCK(); });
+  };
+  const drawDG = () => {
+    const ckOpt = v => `<option value="">— Mọi chuyên khoa —</option>` + S.boot.chuyenKhoa.map(c => `<option value="${esc(c.Ma)}" ${c.Ma === v ? 'selected' : ''}>${esc(c.Ten)}</option>`).join('');
+    const kOpt = v => `<option value="">— Mọi khung —</option>` + khungList().map(k => `<option value="${k.ma}" ${k.ma === v ? 'selected' : ''}>${k.ten}</option>`).join('');
+    $('#dgOut').innerHTML = `<div class="scroll"><table class="t"><thead><tr><th>Khung giờ</th><th>Chuyên khoa</th><th>Áp dụng từ ngày</th><th>Đơn giá (đ/buổi)</th><th>Ghi chú</th><th></th></tr></thead><tbody>
+      ${dg.map((g, i) => `<tr><td><select data-dg-i="${i}" data-k="Khung">${kOpt(g.Khung)}</select></td>
+        <td><select data-dg-i="${i}" data-k="MaCK">${ckOpt(g.MaCK)}</select></td>
+        <td><input type="date" data-dg-i="${i}" data-k="TuNgay" value="${esc(g.TuNgay)}"></td>
+        <td><input type="number" min="0" step="1000" data-dg-i="${i}" data-k="DonGia" value="${esc(g.DonGia)}" style="width:140px;text-align:right"></td>
+        <td><input data-dg-i="${i}" data-k="GhiChu" value="${esc(g.GhiChu)}" style="width:100%"></td>
+        <td class="num"><button class="btn sm danger" data-dgdel="${i}">Xoá</button></td></tr>`).join('')}</tbody></table></div>`;
+    $$('[data-dg-i]').forEach(inp => inp.onchange = () => { dg[Number(inp.dataset.dgI)][inp.dataset.k] = inp.value; });
+    $$('[data-dgdel]').forEach(b => b.onclick = () => { dg.splice(Number(b.dataset.dgdel), 1); drawDG(); });
+  };
+  drawCK(); drawDG();
+  $('#ckAdd').onclick = () => { ck.push({ Ma: '', Ten: '', ThuTu: String(ck.length + 1), HoatDong: '1', _moi: true }); drawCK(); };
+  $('#ckSave').onclick = async () => {
+    try { S.boot.chuyenKhoa = await api('saveChuyenKhoa', ck.map(c => ({ Ma: c.Ma, Ten: c.Ten, ThuTu: c.ThuTu, HoatDong: c.HoatDong }))); toast('Đã lưu chuyên khoa.', 'ok'); VIEWS.caidat(); } catch (e) { /* đã báo lỗi */ }
+  };
+  $('#dgAdd').onclick = () => { dg.push({ Khung: '', MaCK: '', TuNgay: today(), DonGia: '0', GhiChu: '' }); drawDG(); };
+  $('#dgSave').onclick = async () => {
+    try { S.boot.donGia = await api('saveDonGia', dg); toast('Đã lưu đơn giá.', 'ok'); } catch (e) { /* đã báo lỗi */ }
+  };
+  $('#chSave').onclick = async () => {
+    try { S.boot.cauHinh = await api('saveCauHinh', { SoNgayTinhChamChi: $('#chNgay').value }); toast('Đã lưu.', 'ok'); } catch (e) { /* đã báo lỗi */ }
+  };
+};
+
+// ===================== KHỞI ĐỘNG: CHỌN NƠI LƯU DỮ LIỆU =====================
+function veFileBox() {
+  const el = $('#fileBox');
+  if (!Kho.tenFile) { el.innerHTML = ''; return; }
+  el.innerHTML = `📄 <b title="${esc(Kho.tenFile)}">${esc(Kho.tenFile)}</b>
+    ${Kho.ghiThang ? (Kho.luuLuc ? `<span class="ok">✓ đã lưu ${Kho.luuLuc}</span>` : '')
+      : (Kho.chuaLuu ? '<button class="btn sm pri" id="fTai">⬇ Tải file dữ liệu (chưa lưu)</button>' : '<span class="ok">✓ đã tải về</span>')}
+    <button class="btn sm" id="fDoiH">Đổi file</button>`;
+  if ($('#fTai')) $('#fTai').onclick = () => Kho.taiVe();
+  $('#fDoiH').onclick = doiFile;
+}
+
+function doiFile() {
+  if (E && E.dirty && !confirm('Đoàn khám đang sửa chưa được lưu. Bỏ các thay đổi?')) return;
+  if (!Kho.ghiThang && Kho.chuaLuu && !confirm('Dữ liệu chưa được tải về máy. Vẫn đổi file?')) return;
+  E = null;
+  manHinhBatDau();
+}
+
+async function manHinhBatDau(loi) {
+  S.tab = 'start';
+  $('#nav').innerHTML = '';
+  $('#fileBox').innerHTML = '';
+  const cu = await Kho.layHandleCu();
+  main.innerHTML = `<div class="start"><div class="card">
+    <h1>🩺 Phân công đoàn khám</h1>
+    <div class="muted">Chọn nơi lưu dữ liệu. Toàn bộ dữ liệu (bác sỹ, đoàn khám, phân công, đơn giá) nằm trong <b>1 file .json trên máy của bạn</b> – không gửi lên mạng.</div>
+    ${loi ? `<div class="note" style="background:var(--bad-soft);color:var(--bad)">${esc(loi)}</div>` : ''}
+    <div class="opt">
+      ${Kho.HO_TRO ? `
+        ${cu ? `<button class="btn pri" id="sMoLai">📂 Mở lại file lần trước: ${esc(cu.name)}<small>Bấm rồi chọn “Cho phép” nếu trình duyệt hỏi.</small></button>` : ''}
+        <button class="btn ${cu ? '' : 'pri'}" id="sMo">📂 Mở file dữ liệu có sẵn…<small>Chọn file .json đã có (của bạn hoặc trong thư mục dùng chung).</small></button>
+        <button class="btn" id="sTao">➕ Tạo file dữ liệu mới…<small>Chọn thư mục và tên file để bắt đầu từ đầu.</small></button>`
+      : `
+        <label class="btn pri" style="cursor:pointer">📂 Mở file dữ liệu có sẵn…<small>Chọn file .json đã có.</small><input type="file" id="sMoInput" accept=".json,application/json" hidden></label>
+        <button class="btn" id="sTaoTV">➕ Bắt đầu dữ liệu mới<small>Sau khi sửa, bấm “Tải file dữ liệu” ở góc trên để lưu về máy.</small></button>`}
+    </div>
+    ${Kho.HO_TRO ? '' : `<div class="note">Trình duyệt này không cho phép lưu thẳng vào file. Nên dùng <b>Google Chrome</b> hoặc <b>Microsoft Edge</b> trên máy tính để phần mềm tự lưu sau mỗi thao tác.</div>`}
+  </div></div>`;
+  const chay = async fn => {
+    try { await fn(); vaoPhanMem(); }
+    catch (e) { if (e && e.name === 'AbortError') return; manHinhBatDau((e && e.message) || String(e)); }
+  };
+  if ($('#sMoLai')) $('#sMoLai').onclick = () => chay(() => Kho.moLai(cu));
+  if ($('#sMo')) $('#sMo').onclick = () => chay(Kho.moFile);
+  if ($('#sTao')) $('#sTao').onclick = () => chay(Kho.taoFile);
+  if ($('#sMoInput')) $('#sMoInput').onchange = ev => { const f = ev.target.files[0]; if (f) chay(() => Kho.moFileTaiVe(f)); };
+  if ($('#sTaoTV')) $('#sTaoTV').onclick = () => chay(async () => Kho.taoMoiTaiVe());
+}
+
+async function vaoPhanMem() {
+  S.boot = await api('getBootstrap');
+  S.r = S.r || monthRange(0);
+  S.tab = null;
+  go('doan');
+}
+
+Kho.on('doi', veFileBox);
+Kho.on('taiLai', async () => {
+  if (!S.boot) return;
+  S.boot = getBootstrap();
+  toast('File dữ liệu vừa được cập nhật từ nơi khác – đã tải lại dữ liệu mới nhất.');
+  if (S.tab && S.tab !== 'editor' && S.tab !== 'start') setTimeout(() => VIEWS[S.tab](), 0);
+});
+// Quay lại cửa sổ phần mềm → kiểm tra file có bị người khác sửa không
+window.addEventListener('focus', () => { if (S.boot && Kho.ghiThang) Kho.dongBo(); });
+window.addEventListener('beforeunload', e => { if (!Kho.ghiThang && Kho.chuaLuu) { e.preventDefault(); e.returnValue = ''; } });
+
+manHinhBatDau();
+</script>
+</body>
+</html>
