@@ -15,19 +15,19 @@ The code is on GitHub. Each user opens the app at its GitHub Pages address, then
 The real data file (`DuLieu/…json`) and the Excel files are **not uploaded to GitHub**. `.gitignore` excludes them.
 
 ## Đưa lên GitHub và mở bằng đường link (làm 1 lần)
-1. Vào https://github.com/new, đặt tên repository là `phan-cong-doan-kham` và chọn **Public**.
+1. Vào https://github.com/new, đặt tên repository là `bskhambenh` và chọn **Public**.
    - GitHub Pages miễn phí yêu cầu repository là Public.
    - Repository chỉ chứa mã nguồn, không chứa dữ liệu.
 2. Bấm **Create repository**, rồi đẩy mã lên:
    ```bash
-   git remote add origin https://github.com/abcdch1/phan-cong-doan-kham.git
+   git remote add origin https://github.com/abcdch1/bskhambenh.git
    git push -u origin main
    ```
 3. Trên trang repository, vào **Settings › Pages**:
    - *Source*: **Deploy from a branch**
    - *Branch*: **main**, thư mục **/ (root)**
    - Bấm **Save**.
-4. Sau khoảng 1–2 phút, phần mềm có địa chỉ: **https://abcdch1.github.io/phan-cong-doan-kham/**
+4. Sau khoảng 1–2 phút, phần mềm có địa chỉ: **https://abcdch1.github.io/bskhambenh/**
 
 ## Sử dụng
 - Mở bằng **Google Chrome** hoặc **Microsoft Edge** trên máy tính. Hai trình duyệt này cho phép phần mềm lưu thẳng vào file.
