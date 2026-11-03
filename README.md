@@ -1,8 +1,8 @@
 # Phân công đoàn khám & chấm công bác sỹ
 
-This is a web app. It runs entirely in the browser. **Data is stored in a single `.json` file on the user's computer.** Nothing is sent to any server.
+Phần mềm chạy hoàn toàn trên trình duyệt. **Dữ liệu lưu trong 1 file `.json` trên máy người dùng**, không gửi lên máy chủ nào.
 
-The code is on GitHub. Each user opens the app at its GitHub Pages address, then picks the data file to use.
+Mã nguồn để trên GitHub. Mỗi người mở phần mềm bằng địa chỉ GitHub Pages, rồi chọn file dữ liệu để dùng.
 
 ## Cấu trúc
 | Tệp | Nội dung |
@@ -12,7 +12,7 @@ The code is on GitHub. Each user opens the app at its GitHub Pages address, then
 | `js/store.js` | Đọc và ghi file dữ liệu `.json` |
 | `ban-google-sheet/` | Bản cũ chạy trên Google Sheets (chỉ để tham khảo) |
 
-The real data file (`DuLieu/…json`) and the Excel files are **not uploaded to GitHub**. `.gitignore` excludes them.
+File dữ liệu thật (`DuLieu/…json`) và các file Excel **không được đưa lên GitHub** (đã chặn trong `.gitignore`).
 
 ## Đưa lên GitHub và mở bằng đường link (làm 1 lần)
 1. Vào https://github.com/new, đặt tên repository là `bskhambenh` và chọn **Public**.
