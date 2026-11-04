@@ -35,9 +35,10 @@ File dữ liệu thật (`DuLieu/…json`) và các file Excel **không được
   - **Mở file dữ liệu có sẵn**: chọn file `.json`. Ví dụ `DuLieuPhanCong.json` đã có sẵn 40 bác sỹ.
   - **Tạo file dữ liệu mới**: chọn thư mục và tên file để bắt đầu từ đầu.
   - **Mở lại file lần trước**: dùng từ lần thứ hai trở đi. Nếu trình duyệt hỏi, bấm *Cho phép*.
-- Mọi thay đổi được tự động lưu vào file. Góc trên bên phải hiện tên file và giờ lưu gần nhất.
+- Mọi thay đổi được tự động lưu vào file. Góc trên bên phải hiện giờ lưu gần nhất (màn hình rộng hiện thêm tên file).
 - **Bảng phân công** và **Báo cáo công** có nút **⬇ Xuất Excel** để tải file `.xlsx`.
-- Trên Safari, Firefox hoặc điện thoại, phần mềm không ghi thẳng vào file được. Sau khi sửa, cần bấm **⬇ Tải file dữ liệu** để lưu về máy.
+- Trên Safari, Firefox hoặc điện thoại, phần mềm không ghi thẳng vào file được. Sau khi sửa, cần bấm nút **Lưu về máy** ở góc trên để tải file dữ liệu về.
+- Giao diện dùng được trên điện thoại: thanh chuyển mục nằm ở đáy màn hình, các bảng hiển thị dạng thẻ.
 
 ## Nhiều người cùng dùng
 1. Đặt file `.json` trong một thư mục đồng bộ dùng chung, ví dụ **Google Drive cho máy tính** hoặc **OneDrive**.

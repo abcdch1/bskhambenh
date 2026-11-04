@@ -2,149 +2,380 @@
 <html lang="vi">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f766e">
 <title>Phân công đoàn khám</title>
 <style>
   :root {
-    --bg: #f3f5fa; --card: #fff; --line: #e2e7ef; --text: #1f2937; --muted: #6b7280;
-    --pri: #1d4ed8; --pri-soft: #e8efff; --ok: #15803d; --ok-soft: #e6f6ec;
-    --warn: #b45309; --warn-soft: #fff3df; --bad: #b91c1c; --bad-soft: #fdecec; --star: #f59e0b;
+    --bg: #f3f5f8; --card: #fff; --line: #e4e8ee; --line2: #d0d7e1; --text: #172033; --muted: #667085; --faint: #98a2b3;
+    --pri: #0f766e; --pri-h: #115e59; --pri-soft: #e6f4f1; --pri-line: #9fd6cb;
+    --blue: #1d4ed8; --blue-soft: #e9efff;
+    --ok: #15803d; --ok-soft: #e7f6ec; --warn: #b45309; --warn-soft: #fff3df; --bad: #c0262d; --bad-soft: #fdeded; --star: #f5a524;
+    --r: 14px; --sh: 0 1px 2px rgba(16, 24, 40, .04), 0 1px 3px rgba(16, 24, 40, .06);
+    --hh: 60px; --sab: env(safe-area-inset-bottom, 0px);
   }
-  * { box-sizing: border-box; }
-  body { margin: 0; font: 14px/1.45 "Segoe UI", Roboto, Arial, sans-serif; background: var(--bg); color: var(--text); }
-  header { background: #fff; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 14px; padding: 0 16px; position: sticky; top: 0; z-index: 20; }
-  header .brand { font-weight: 700; color: var(--pri); padding: 12px 0; white-space: nowrap; }
-  #fileBox { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--muted); white-space: nowrap; }
-  #fileBox b { color: var(--text); font-weight: 600; max-width: 220px; overflow: hidden; text-overflow: ellipsis; display: inline-block; vertical-align: bottom; }
-  .start { max-width: 620px; margin: 40px auto; }
-  .start .card { padding: 26px; }
-  .start h1 { font-size: 22px; margin: 0 0 6px; color: var(--pri); }
-  .start .opt { display: flex; flex-direction: column; gap: 10px; margin: 20px 0 6px; }
-  .start .opt .btn { padding: 12px 16px; text-align: left; font-size: 15px; white-space: normal; }
-  .start .opt .btn small { display: block; font-size: 12.5px; opacity: .8; margin-top: 2px; }
-  .note { background: var(--warn-soft); color: #7c4a03; border-radius: 8px; padding: 10px 12px; font-size: 13px; margin-top: 14px; }
-  nav { display: flex; gap: 2px; overflow-x: auto; flex: 1; }
-  nav button { border: 0; background: none; padding: 14px 12px 11px; font: inherit; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; }
-  nav button.on { color: var(--pri); border-bottom-color: var(--pri); font-weight: 600; }
-  main { padding: 16px; max-width: 1500px; margin: 0 auto; }
-  h2 { font-size: 18px; margin: 0; }
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; margin-bottom: 14px; }
-  .card h3 { margin: 0 0 12px; font-size: 15px; }
-  .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end; margin-bottom: 12px; }
-  .sp { flex: 1; }
-  label.f { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--muted); }
-  .lbl { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
-  input, select, textarea { font: inherit; padding: 7px 9px; border: 1px solid #cfd6e2; border-radius: 7px; background: #fff; color: var(--text); min-width: 0; }
-  textarea { resize: vertical; }
-  input:focus, select:focus, textarea:focus { outline: 2px solid #bfd0ff; border-color: var(--pri); }
-  input[type=checkbox] { width: 16px; height: 16px; vertical-align: -3px; }
-  .btn { font: inherit; padding: 7px 13px; border-radius: 7px; border: 1px solid #cfd6e2; background: #fff; cursor: pointer; white-space: nowrap; color: var(--text); }
-  .btn:hover { background: #f3f5f9; }
-  .btn.pri { background: var(--pri); border-color: var(--pri); color: #fff; }
-  .btn.pri:hover { background: #1e40af; }
-  .btn.danger { color: var(--bad); border-color: #f1c4c4; }
-  .btn.sm { padding: 3px 9px; font-size: 12.5px; }
-  .btn.ghost { border-color: transparent; background: none; }
-  .btn:disabled { opacity: .5; cursor: default; }
-  .seg { display: inline-flex; border: 1px solid #cfd6e2; border-radius: 7px; overflow: hidden; }
-  .seg button { border: 0; border-right: 1px solid #cfd6e2; background: #fff; font: inherit; font-size: 12.5px; padding: 7px 10px; cursor: pointer; }
-  .seg button:last-child { border-right: 0; }
-  .seg button:hover { background: #f3f5f9; }
-  .scroll { overflow: auto; }
-  table.t { width: 100%; border-collapse: collapse; }
-  table.t th, table.t td { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
-  table.t th { font-size: 12px; color: var(--muted); font-weight: 600; background: #fafbfd; white-space: nowrap; }
-  table.t tr.click:hover td { background: #f6f8ff; cursor: pointer; }
-  table.t tfoot td { font-weight: 700; background: #f8fafc; }
-  .num { text-align: right !important; font-variant-numeric: tabular-nums; }
-  .badge { display: inline-block; padding: 1px 8px; border-radius: 99px; font-size: 12px; background: #eef1f6; color: #374151; white-space: nowrap; font-weight: 500; }
-  .st-0 { background: #eef1f6; color: #4b5563; }
-  .st-1 { background: var(--pri-soft); color: var(--pri); }
-  .st-2 { background: var(--ok-soft); color: var(--ok); }
-  .st-3 { background: var(--bad-soft); color: var(--bad); text-decoration: line-through; }
-  .st-ok { background: var(--ok-soft); color: var(--ok); }
-  .chip { display: inline-block; padding: 1px 7px; border-radius: 5px; background: var(--pri-soft); color: var(--pri); font-size: 12px; margin: 1px 3px 1px 0; white-space: nowrap; }
-  .stars { color: var(--star); letter-spacing: 1px; white-space: nowrap; }
-  .stars .off { color: #d6dae2; }
-  .muted { color: var(--muted); }
-  .small { font-size: 12px; }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: var(--bg); color: var(--text); }
+  .ic { width: 18px; height: 18px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .muted { color: var(--muted); } .small { font-size: 12.5px; }
   .ok { color: var(--ok); } .bad { color: var(--bad); } .warn { color: var(--warn); }
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px 14px; }
-  .span2 { grid-column: span 2; }
-  @media (max-width: 560px) { .span2 { grid-column: auto; } }
-  .pill { display: inline-flex; align-items: center; gap: 6px; border: 1px solid #cfd6e2; border-radius: 8px; padding: 7px 12px; margin: 0 8px 6px 0; cursor: pointer; background: #fff; }
-  .pill:has(input:checked) { border-color: var(--pri); background: var(--pri-soft); }
-  .progress { display: inline-block; min-width: 54px; text-align: center; padding: 1px 8px; border-radius: 6px; font-size: 12.5px; font-weight: 600; }
-  .progress.full { background: var(--ok-soft); color: var(--ok); }
-  .progress.part { background: var(--warn-soft); color: var(--warn); }
-  .datehead td { background: #f6f8fc; font-weight: 600; color: #334155; }
+  .sp { flex: 1; }
+  .show-m { display: none !important; }
 
-  /* Phân công */
-  .ckblock { border: 1px solid var(--line); border-radius: 9px; margin-bottom: 12px; overflow: hidden; }
-  .ckhead { padding: 9px 12px; background: #f6f8fc; font-weight: 600; border-bottom: 1px solid var(--line); }
-  table.pc td, table.pc th { border-bottom: 1px solid #eef1f5; }
-  table.pc tr:last-child td { border-bottom: 0; }
-  .slot { position: relative; width: 100%; min-height: 44px; border-radius: 8px; padding: 6px 28px 6px 10px; text-align: left; font: inherit; }
-  .slot.empty { border: 1.5px dashed #b9c4d6; background: #fbfcfe; color: var(--pri); cursor: pointer; }
+  /* ---------- Header & điều hướng ---------- */
+  header { position: sticky; top: 0; z-index: 30; height: var(--hh); background: rgba(255, 255, 255, .92); backdrop-filter: saturate(1.6) blur(10px); -webkit-backdrop-filter: saturate(1.6) blur(10px); border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 18px; padding: 0 20px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 15px; white-space: nowrap; }
+  .brand .logo { width: 34px; height: 34px; border-radius: 10px; background: linear-gradient(135deg, #14b8a6, var(--pri)); color: #fff; display: grid; place-items: center; box-shadow: 0 2px 6px rgba(15, 118, 110, .35); }
+  .brand .logo .ic { width: 20px; height: 20px; }
+  nav { display: flex; gap: 4px; flex: 1; overflow-x: auto; scrollbar-width: none; }
+  nav::-webkit-scrollbar { display: none; }
+  nav button { display: inline-flex; align-items: center; gap: 7px; border: 0; background: none; padding: 8px 12px; border-radius: 9px; font: inherit; font-weight: 500; color: var(--muted); cursor: pointer; white-space: nowrap; }
+  nav button:hover { background: #f1f4f7; color: var(--text); }
+  nav button.on { background: var(--pri-soft); color: var(--pri); font-weight: 600; }
+  nav button .s { display: none; }
+  #fileBox { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); white-space: nowrap; }
+  #fileBox .fname { display: inline-flex; align-items: center; gap: 6px; }
+  #fileBox .fname b { color: var(--text); font-weight: 600; max-width: 200px; overflow: hidden; text-overflow: ellipsis; }
+  .fstat { display: inline-flex; align-items: center; gap: 4px; }
+  .fstat .ic { width: 15px; height: 15px; }
+  body[data-tab="start"] nav, body[data-tab="start"] #fileBox { display: none; }
+
+  main { padding: 22px 20px 40px; max-width: 1280px; margin: 0 auto; }
+  .page-head { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+  .page-head h1 { font-size: 22px; line-height: 1.25; margin: 0; letter-spacing: -.01em; }
+  .page-head .sub { color: var(--muted); font-size: 13px; margin-top: 2px; }
+  .page-head .acts { display: flex; gap: 8px; margin-left: auto; }
+
+  /* ---------- Thẻ, nút, ô nhập ---------- */
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; margin-bottom: 16px; box-shadow: var(--sh); }
+  .card h3 { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-size: 15.5px; }
+  .card .hint { color: var(--muted); font-size: 13px; margin: -6px 0 14px; }
+  .step { width: 26px; height: 26px; border-radius: 99px; background: var(--pri-soft); color: var(--pri); font-size: 13px; font-weight: 700; display: grid; place-items: center; flex: none; }
+  .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
+  .filters { display: flex; flex-wrap: wrap; gap: 12px 16px; align-items: flex-end; padding: 14px 16px; }
+  .range { display: flex; gap: 10px; }
+  label.f { display: flex; flex-direction: column; gap: 5px; font-size: 12.5px; font-weight: 500; color: var(--muted); }
+  .lbl { font-size: 12.5px; font-weight: 500; color: var(--muted); margin-bottom: 6px; }
+  input, select, textarea { font: inherit; font-size: 14px; padding: 8px 10px; height: 38px; border: 1px solid var(--line2); border-radius: 9px; background: #fff; color: var(--text); min-width: 0; transition: border-color .15s, box-shadow .15s; }
+  textarea { height: auto; resize: vertical; }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--pri); box-shadow: 0 0 0 3px rgba(15, 118, 110, .15); }
+  input:disabled { background: #f5f7fa; color: var(--muted); }
+  input[type=checkbox] { width: 17px; height: 17px; padding: 0; accent-color: var(--pri); vertical-align: -3px; box-shadow: none; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; font: inherit; font-weight: 500; height: 38px; padding: 0 14px; border-radius: 9px; border: 1px solid var(--line2); background: #fff; cursor: pointer; white-space: nowrap; color: var(--text); text-decoration: none; transition: background .15s, border-color .15s; }
+  .btn:hover { background: #f4f6f9; }
+  .btn.pri { background: var(--pri); border-color: var(--pri); color: #fff; box-shadow: 0 1px 2px rgba(15, 118, 110, .3); }
+  .btn.pri:hover { background: var(--pri-h); }
+  .btn.danger { color: var(--bad); border-color: #f2c7c9; }
+  .btn.danger:hover { background: var(--bad-soft); }
+  .btn.sm { height: 32px; padding: 0 10px; font-size: 13px; }
+  .btn.ghost { border-color: transparent; background: none; }
+  .btn.ghost:hover { background: #eef1f5; }
+  .btn.icon { width: 38px; padding: 0; }
+  .btn.sm.icon { width: 32px; }
+  .btn:disabled { opacity: .5; cursor: default; }
+  .seg { display: inline-flex; background: #eef1f5; border-radius: 10px; padding: 3px; gap: 2px; }
+  .seg button { border: 0; background: none; font: inherit; font-size: 13px; font-weight: 500; color: var(--muted); height: 32px; padding: 0 12px; border-radius: 8px; cursor: pointer; white-space: nowrap; }
+  .seg button:hover { color: var(--text); }
+  .seg button.on { background: #fff; color: var(--pri); box-shadow: 0 1px 2px rgba(16, 24, 40, .1); }
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pill { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line2); border-radius: 10px; padding: 8px 12px; cursor: pointer; background: #fff; transition: all .15s; user-select: none; }
+  .pill:hover { border-color: var(--pri-line); }
+  .pill:has(input:checked) { border-color: var(--pri); background: var(--pri-soft); }
+  .pill.sm { padding: 5px 10px; font-size: 13px; }
+  .pill .k { display: flex; flex-direction: column; line-height: 1.25; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px 16px; }
+  .span2 { grid-column: span 2; }
+  .badge { display: inline-flex; align-items: center; padding: 2px 9px; border-radius: 99px; font-size: 12px; font-weight: 600; background: #eef1f5; color: #475467; white-space: nowrap; }
+  .st-0 { background: #eef1f5; color: #475467; }
+  .st-1 { background: var(--blue-soft); color: var(--blue); }
+  .st-2, .st-ok { background: var(--ok-soft); color: var(--ok); }
+  .st-3 { background: var(--bad-soft); color: var(--bad); }
+  .chips { display: inline-flex; flex-wrap: wrap; gap: 4px; }
+  .chip { display: inline-block; padding: 1px 8px; border-radius: 6px; background: var(--pri-soft); color: var(--pri); font-size: 12px; font-weight: 500; white-space: nowrap; }
+  .chip.gray { background: #eef1f5; color: #475467; }
+  .stars { color: var(--star); letter-spacing: 1px; white-space: nowrap; }
+  .stars .off { color: #dde2e9; }
+  .empty-state { padding: 40px 20px; text-align: center; color: var(--muted); }
+  .card > .empty-state:only-child { padding: 24px; }
+  .note { background: var(--warn-soft); color: #7c4a03; border-radius: 10px; padding: 11px 13px; font-size: 13px; margin-top: 14px; }
+  .note.bad { background: var(--bad-soft); color: var(--bad); }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+  .stat { background: #fff; border: 1px solid var(--line); border-radius: var(--r); padding: 14px 16px; box-shadow: var(--sh); }
+  .stat .v { font-size: 22px; font-weight: 700; letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
+  .stat .l { font-size: 12.5px; color: var(--muted); }
+
+  /* ---------- Bảng ---------- */
+  .scroll { overflow: auto; }
+  .tcard { padding: 0; overflow: hidden; }
+  .tcard .foot { padding: 10px 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12.5px; }
+  table.t { width: 100%; border-collapse: collapse; }
+  table.t th, table.t td { padding: 10px 14px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: middle; }
+  table.t th { font-size: 12px; color: var(--muted); font-weight: 600; background: #f8fafb; white-space: nowrap; text-transform: uppercase; letter-spacing: .03em; }
+  table.t tbody tr:last-child td { border-bottom: 0; }
+  table.t tr.click { cursor: pointer; }
+  table.t tr.click:hover td { background: #f6faf9; }
+  table.t tfoot td { font-weight: 700; background: #f8fafb; border-top: 1px solid var(--line); border-bottom: 0; }
+  table.t tr.muted td { color: var(--faint); }
+  .num { text-align: right !important; font-variant-numeric: tabular-nums; }
+  tr.ct > td { background: #fafcfc; padding: 4px 14px 14px; }
+  table.inner { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: #fff; }
+  table.inner th, table.inner td { padding: 7px 12px; }
+
+  /* ---------- Lịch đoàn khám ---------- */
+  .dgroup { margin-bottom: 18px; }
+  .dhead { font-size: 13px; font-weight: 600; color: var(--muted); margin: 0 4px 8px; display: flex; align-items: center; gap: 8px; }
+  .dhead.today { color: var(--pri); }
+  .dlist { display: flex; flex-direction: column; gap: 8px; }
+  .dcard { display: flex; align-items: center; gap: 14px; background: #fff; border: 1px solid var(--line); border-radius: var(--r); padding: 14px 12px 14px 16px; box-shadow: var(--sh); cursor: pointer; transition: border-color .15s, box-shadow .15s; border-left: 4px solid var(--line2); }
+  .dcard:hover { border-color: var(--pri-line); box-shadow: 0 4px 12px rgba(16, 24, 40, .08); }
+  .dcard.s1 { border-left-color: var(--blue); } .dcard.s2 { border-left-color: var(--ok); } .dcard.s3 { border-left-color: #e6a3a6; opacity: .75; }
+  .dcard.s0 { border-left-color: #c3cad5; }
+  .dmain { flex: 1; min-width: 0; }
+  .dname { font-weight: 600; font-size: 15px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .dmeta { display: flex; flex-wrap: wrap; gap: 4px 14px; color: var(--muted); font-size: 13px; margin-top: 4px; }
+  .dmeta span { display: inline-flex; align-items: center; gap: 5px; }
+  .dmeta .ic { width: 14px; height: 14px; }
+  .dnote { font-size: 12.5px; color: var(--muted); margin-top: 4px; font-style: italic; }
+  .dside { display: flex; align-items: center; gap: 14px; }
+  .prog { width: 110px; }
+  .prog .bar { height: 6px; background: #eef1f5; border-radius: 99px; overflow: hidden; }
+  .prog .bar i { display: block; height: 100%; background: var(--warn); border-radius: 99px; }
+  .prog.full .bar i { background: var(--ok); }
+  .prog .tx { font-size: 12px; color: var(--muted); margin-top: 4px; display: flex; justify-content: space-between; }
+  .prog .tx b { color: var(--warn); }
+  .prog.full .tx b { color: var(--ok); }
+
+  /* ---------- Sửa đoàn & phân công ---------- */
+  .ebar { position: sticky; top: var(--hh); z-index: 20; display: flex; align-items: center; gap: 10px; background: rgba(243, 245, 248, .92); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); margin: -22px -20px 16px; padding: 12px 20px; border-bottom: 1px solid transparent; }
+  .ebar h1 { font-size: 19px; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ebar .eact { display: flex; gap: 8px; }
+  .dirty { font-size: 12.5px; color: var(--warn); font-weight: 500; white-space: nowrap; }
+  .nctable { width: auto; min-width: 360px; }
+  .nctable input { width: 76px; text-align: center; }
+  .ckblock { border: 1px solid var(--line); border-radius: 12px; margin-bottom: 12px; overflow: hidden; }
+  .ckhead { padding: 10px 14px; background: #f8fafb; border-bottom: 1px solid var(--line); display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+  .ckhead b { font-size: 14.5px; }
+  .ckhead span { font-size: 12.5px; color: var(--muted); }
+  .pcgrid { display: grid; grid-template-columns: 74px repeat(var(--n), minmax(180px, 1fr)); gap: 8px 10px; padding: 12px 14px; align-items: stretch; }
+  .pch { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .03em; }
+  .pch span { font-weight: 400; text-transform: none; letter-spacing: 0; }
+  .pcvt { font-size: 12.5px; color: var(--muted); align-self: center; }
+  .slot { position: relative; width: 100%; min-height: 50px; border-radius: 10px; padding: 7px 32px 7px 12px; text-align: left; font: inherit; display: flex; flex-direction: column; justify-content: center; }
+  .slot .tag { display: none; }
+  .slot.empty { border: 1.5px dashed #b9c4d2; background: #fbfcfd; color: var(--pri); font-weight: 500; cursor: pointer; flex-direction: row; align-items: center; justify-content: flex-start; gap: 6px; }
   .slot.empty:hover { background: var(--pri-soft); border-color: var(--pri); }
-  .slot.full { border: 1px solid #cdd8ee; background: #f7faff; cursor: pointer; }
+  .slot.full { border: 1px solid #cfe3de; background: #f5fbfa; cursor: pointer; }
   .slot.full:hover { border-color: var(--pri); }
   .slot.full.warn { border-color: #f2c27b; background: var(--warn-soft); }
   .slot.full.bad { border-color: #eba3a3; background: var(--bad-soft); }
-  .slot.na { color: #c3c9d4; text-align: center; padding: 10px; }
-  .slot .x { position: absolute; top: 4px; right: 4px; border: 0; background: none; font-size: 17px; line-height: 1; color: #94a3b8; cursor: pointer; padding: 2px 5px; border-radius: 5px; }
+  .slot.na { color: #c3c9d4; align-items: center; padding: 10px; background: repeating-linear-gradient(-45deg, #fafbfc, #fafbfc 6px, #f3f5f8 6px, #f3f5f8 12px); }
+  .slot .x { position: absolute; top: 50%; transform: translateY(-50%); right: 4px; border: 0; background: none; width: 28px; height: 28px; display: grid; place-items: center; color: #94a3b8; cursor: pointer; border-radius: 7px; }
   .slot .x:hover { color: var(--bad); background: #fff; }
-  .pk { display: grid; grid-template-columns: 1fr auto 80px 230px; gap: 10px; align-items: center; padding: 9px 10px; border-bottom: 1px solid var(--line); cursor: pointer; }
-  .pk:hover { background: #f6f8ff; }
+  .slot .x .ic { width: 16px; height: 16px; }
+
+  /* Hộp chọn bác sỹ */
+  .pkq { position: sticky; top: -18px; background: #fff; margin: -18px -18px 0; padding: 14px 18px 10px; z-index: 1; border-bottom: 1px solid var(--line); }
+  .pkq input { width: 100%; height: 42px; }
+  .pk { display: grid; grid-template-columns: 1fr auto 76px 220px; grid-template-areas: "n s c t"; gap: 4px 14px; align-items: center; padding: 11px 6px; border-bottom: 1px solid var(--line); cursor: pointer; border-radius: 8px; }
+  .pk:hover { background: #f6faf9; }
   .pk.cur { background: var(--pri-soft); }
   .pk.dis { opacity: .5; cursor: not-allowed; }
   .pk.dis:hover { background: none; }
-  .pks { font-size: 12.5px; }
-  .pks.ranh { color: var(--ok); } .pks.kiem { color: var(--pri); } .pks.ban { color: var(--warn); } .pks.trung, .pks.trungvt { color: var(--bad); }
-  @media (max-width: 700px) { .pk { grid-template-columns: 1fr auto; } }
+  .pk-n { grid-area: n; } .pk-s { grid-area: s; } .pk-c { grid-area: c; } .pks { grid-area: t; font-size: 12.5px; }
+  .pks.ranh { color: var(--ok); } .pks.kiem { color: var(--blue); } .pks.ban { color: var(--warn); } .pks.trung, .pks.trungvt { color: var(--bad); }
 
   /* Bảng phân công */
-  table.bang { border-collapse: collapse; min-width: 100%; }
-  table.bang th, table.bang td { border: 1px solid #d7dde8; padding: 7px 9px; vertical-align: top; text-align: left; min-width: 170px; }
-  table.bang th { background: #e7eefc; position: sticky; left: 0; min-width: 140px; z-index: 1; }
-  table.bang tr.h td { background: #f5f8ff; }
+  table.bang { border-collapse: separate; border-spacing: 0; min-width: 100%; }
+  table.bang th, table.bang td { border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 9px 12px; vertical-align: top; text-align: left; min-width: 180px; }
+  table.bang th { background: #f3f8f7; position: sticky; left: 0; min-width: 140px; z-index: 1; font-size: 13px; color: #344054; }
+  table.bang tr.h td { background: #fafcfc; }
+  table.bang tr.h:first-child td { background: var(--pri-soft); }
   table.bang a { color: var(--pri); text-decoration: none; }
+  .bang-title { padding: 14px 16px; border-bottom: 1px solid var(--line); font-weight: 700; font-size: 14px; }
   .thieu { color: var(--bad); font-size: 12px; margin-top: 3px; }
+  .bcards { display: flex; flex-direction: column; gap: 12px; }
+  .bcard { background: #fff; border: 1px solid var(--line); border-radius: var(--r); box-shadow: var(--sh); overflow: hidden; }
+  .bcard .bh { padding: 12px 14px; border-bottom: 1px solid var(--line); }
+  .bcard .bh .n { font-weight: 600; font-size: 15px; display: flex; gap: 8px; align-items: center; justify-content: space-between; }
+  .bcard dl { margin: 0; padding: 4px 14px 10px; display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 13.5px; }
+  .bcard dt { color: var(--muted); font-size: 12.5px; padding-top: 1px; }
+  .bcard dd { margin: 0; }
+  .bcard .sec { padding: 10px 14px 0; font-size: 11.5px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; border-top: 1px solid var(--line); }
 
-  /* Modal, toast, loading */
-  .modal-bg { position: fixed; inset: 0; background: rgba(15, 23, 42, .45); display: flex; align-items: flex-start; justify-content: center; padding: 30px 12px; z-index: 50; overflow: auto; }
-  .modal { background: #fff; border-radius: 12px; width: 100%; max-width: 780px; box-shadow: 0 20px 50px rgba(0, 0, 0, .25); }
-  .modal.wide { max-width: 980px; }
-  .modal .mh { padding: 12px 16px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; font-weight: 600; gap: 10px; }
-  .modal .mb { padding: 16px; }
-  .modal .mf { padding: 12px 16px; border-top: 1px solid var(--line); display: flex; gap: 8px; }
-  .tabs2 { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin: 18px 0 12px; }
-  .tabs2 button { border: 0; background: none; padding: 8px 12px; font: inherit; color: var(--muted); border-bottom: 2px solid transparent; cursor: pointer; }
+  /* ---------- Cửa sổ, thông báo ---------- */
+  .modal-bg { position: fixed; inset: 0; background: rgba(15, 23, 42, .45); display: flex; align-items: flex-start; justify-content: center; padding: 40px 16px; z-index: 50; animation: fade .15s; }
+  .modal { background: #fff; border-radius: 16px; width: 100%; max-width: 760px; max-height: calc(100vh - 80px); display: flex; flex-direction: column; box-shadow: 0 24px 60px rgba(0, 0, 0, .25); animation: pop .18s ease-out; }
+  .modal.wide { max-width: 960px; }
+  .modal .mh { padding: 14px 18px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 15px; gap: 10px; flex: none; }
+  .modal .mb { padding: 18px; overflow: auto; flex: 1; }
+  .modal .mf { padding: 12px 18px; border-top: 1px solid var(--line); display: flex; gap: 8px; flex: none; }
+  @keyframes fade { from { opacity: 0; } }
+  @keyframes pop { from { transform: translateY(12px); opacity: 0; } }
+  .tabs2 { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin: 20px 0 14px; }
+  .tabs2 button { border: 0; background: none; padding: 9px 12px; font: inherit; font-weight: 500; color: var(--muted); border-bottom: 2px solid transparent; cursor: pointer; margin-bottom: -1px; }
   .tabs2 button.on { color: var(--pri); border-bottom-color: var(--pri); font-weight: 600; }
-  .starpick span { font-size: 24px; cursor: pointer; color: #d6dae2; padding-right: 2px; }
+  .starpick { display: flex; height: 38px; align-items: center; }
+  .starpick span { font-size: 28px; line-height: 1; cursor: pointer; color: #dde2e9; padding-right: 3px; }
   .starpick span.on { color: var(--star); }
-  #toast { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); z-index: 100; display: flex; flex-direction: column; gap: 8px; align-items: center; pointer-events: none; }
-  #toast div { background: #1f2937; color: #fff; padding: 10px 16px; border-radius: 9px; max-width: 640px; white-space: pre-line; box-shadow: 0 6px 20px rgba(0, 0, 0, .2); pointer-events: auto; }
-  #toast div.bad { background: #991b1b; }
-  #toast div.ok { background: #166534; }
-  #loading { position: fixed; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, transparent, var(--pri), transparent); background-size: 50% 100%; animation: ld 1s linear infinite; z-index: 200; display: none; }
+  #toast { position: fixed; bottom: calc(20px + var(--sab)); left: 50%; transform: translateX(-50%); z-index: 100; display: flex; flex-direction: column; gap: 8px; align-items: center; pointer-events: none; width: max-content; max-width: calc(100vw - 24px); }
+  #toast div { background: #1d2939; color: #fff; padding: 11px 16px; border-radius: 12px; max-width: 640px; white-space: pre-line; box-shadow: 0 8px 24px rgba(0, 0, 0, .22); pointer-events: auto; animation: pop .2s ease-out; }
+  #toast div.bad { background: #9f1c22; }
+  #toast div.ok { background: #116a4a; }
+  #loading { position: fixed; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, transparent, #14b8a6, transparent); background-size: 50% 100%; animation: ld 1s linear infinite; z-index: 200; display: none; }
   @keyframes ld { from { background-position: -50% 0; } to { background-position: 150% 0; } }
-  .empty-state { padding: 30px; text-align: center; color: var(--muted); }
+
+  /* ---------- Màn hình bắt đầu ---------- */
+  .start { max-width: 560px; margin: 6vh auto 0; }
+  .start .hero { text-align: center; margin-bottom: 22px; }
+  .start .hero .logo { width: 60px; height: 60px; border-radius: 18px; margin: 0 auto 14px; background: linear-gradient(135deg, #14b8a6, var(--pri)); color: #fff; display: grid; place-items: center; box-shadow: 0 8px 20px rgba(15, 118, 110, .3); }
+  .start .hero .logo .ic { width: 32px; height: 32px; }
+  .start h1 { font-size: 24px; margin: 0 0 6px; letter-spacing: -.01em; }
+  .start .hero p { margin: 0 auto; color: var(--muted); max-width: 440px; }
+  .opt { display: flex; flex-direction: column; gap: 10px; }
+  .optbtn { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; font: inherit; background: #fff; border: 1px solid var(--line); border-radius: var(--r); padding: 16px; cursor: pointer; box-shadow: var(--sh); color: var(--text); transition: all .15s; }
+  .optbtn:hover { border-color: var(--pri); box-shadow: 0 4px 14px rgba(15, 118, 110, .12); }
+  .optbtn .oi { width: 42px; height: 42px; border-radius: 12px; background: var(--pri-soft); color: var(--pri); display: grid; place-items: center; flex: none; }
+  .optbtn.main { border-color: var(--pri); background: linear-gradient(0deg, #f3fbf9, #fff); }
+  .optbtn.main .oi { background: var(--pri); color: #fff; }
+  .optbtn b { display: block; font-size: 15px; }
+  .optbtn small { display: block; color: var(--muted); font-size: 13px; margin-top: 1px; }
+  .optbtn .go { margin-left: auto; color: var(--faint); }
+
+  @media (max-width: 1380px) { #fileBox .fname { display: none; } }
+  @media (max-width: 1000px) and (min-width: 761px) { .brand > span:last-child { display: none; } }
+
+  /* ===================== ĐIỆN THOẠI ===================== */
+  @media (max-width: 760px) {
+    :root { --hh: 54px; }
+    body { font-size: 15px; }
+    .hide-m { display: none !important; }
+    .show-m { display: revert !important; }
+    .bcards.show-m { display: flex !important; }
+    input, select, textarea { font-size: 16px; height: 42px; }
+    textarea { height: auto; }
+    .btn { height: 40px; }
+    /* backdrop-filter khiến phần tử fixed bên trong bị neo theo cha → tắt trên điện thoại */
+    header, .ebar { backdrop-filter: none; -webkit-backdrop-filter: none; }
+    header { padding: 0 12px 0 14px; gap: 10px; background: #fff; }
+    .ebar { background: var(--bg); }
+    .brand { font-size: 14.5px; }
+    .brand .logo { width: 30px; height: 30px; border-radius: 9px; }
+    .brand .logo .ic { width: 18px; height: 18px; }
+    #fileBox { margin-left: auto; gap: 4px; }
+    #fileBox .fname { display: none; }
+
+    nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; background: rgba(255, 255, 255, .96); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-top: 1px solid var(--line); padding: 6px 4px calc(6px + var(--sab)); gap: 0; overflow: visible; }
+    nav button { flex: 1; flex-direction: column; gap: 3px; padding: 6px 2px; font-size: 11px; border-radius: 10px; min-width: 0; }
+    nav button .ic { width: 22px; height: 22px; }
+    nav button .l { display: none; }
+    nav button .s { display: block; }
+    nav button.on { background: none; }
+    nav button.on .ic { background: var(--pri-soft); border-radius: 99px; width: 52px; padding: 0 15px; box-sizing: border-box; height: 26px; margin: -2px 0 -2px; }
+    body[data-tab="editor"] nav { display: none; }
+
+    main { padding: 16px 12px calc(96px + var(--sab)); }
+    .page-head { margin-bottom: 12px; }
+    .page-head h1 { font-size: 20px; }
+    .card { padding: 14px; border-radius: 12px; margin-bottom: 12px; }
+    .filters { padding: 12px; gap: 10px; }
+    .range { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
+    .range input { width: 100%; }
+    .seg { display: flex; width: 100%; }
+    .seg button { flex: 1; padding: 0 4px; font-size: 12.5px; }
+    .grid { grid-template-columns: 1fr; gap: 12px; }
+    .span2 { grid-column: auto; }
+    .pills.cols { display: grid; grid-template-columns: repeat(3, 1fr); }
+    .pills.cols .pill { padding: 10px; }
+    .stats { gap: 8px; }
+    .stat { padding: 10px 12px; }
+    .stat .v { font-size: 17px; }
+    .stat .l { font-size: 11.5px; }
+
+    /* Nút thêm nổi */
+    .fab { position: fixed; right: 16px; bottom: calc(80px + var(--sab)); z-index: 35; height: 52px; padding: 0 20px 0 16px; border-radius: 99px; font-size: 15px; box-shadow: 0 6px 18px rgba(15, 118, 110, .4) !important; }
+    #toast { bottom: calc(84px + var(--sab)); }
+    body[data-tab="editor"] #toast { bottom: calc(80px + var(--sab)); }
+
+    /* Lịch đoàn khám: thẻ */
+    .dcard { flex-wrap: wrap; padding: 12px 10px 12px 14px; gap: 8px 10px; }
+    .dside { width: 100%; justify-content: space-between; }
+    .dside .prog { flex: 1; max-width: 200px; }
+    .dcard > .btn { position: absolute; }
+    .dcard { position: relative; }
+    .dcard .del { top: 6px; right: 6px; }
+    .dmain { padding-right: 30px; }
+
+    /* Bảng → thẻ */
+    .tcard.respc { background: none; border: 0; box-shadow: none; overflow: visible; padding: 0; }
+    .tcard.respc .foot { border: 0; padding: 4px 4px 0; }
+    table.resp, table.resp > tbody, table.resp > tfoot, table.resp > tbody > tr, table.resp > tfoot > tr, table.resp > tbody > tr > td, table.resp > tfoot > tr > td { display: block; width: 100%; }
+    table.resp > thead { display: none; }
+    table.resp > tbody > tr, table.resp > tfoot > tr { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; margin-bottom: 8px; box-shadow: var(--sh); }
+    table.resp > tbody > tr[hidden] { display: none; }
+    table.resp > tbody > tr > td, table.resp > tfoot > tr > td { border: 0; padding: 4px 0; display: flex; justify-content: space-between; align-items: center; gap: 14px; text-align: right; background: none !important; }
+    table.resp td[data-l]::before { content: attr(data-l); color: var(--muted); font-size: 13px; font-weight: 400; text-align: left; flex: none; }
+    table.resp td:empty, table.resp td.m-hide { display: none !important; }
+    table.resp td.m-title { display: block; text-align: left; font-size: 15.5px; padding: 2px 0 6px; }
+    table.resp td.m-act { justify-content: flex-end; border-top: 1px solid var(--line); margin-top: 6px; padding-top: 8px; }
+    table.resp td > input:not([type=checkbox]), table.resp td > select { flex: 1; max-width: 62%; width: auto !important; }
+    table.resp .chips { justify-content: flex-end; }
+    table.resp > tbody > tr.ct { margin-top: -4px; background: #f8fafb; box-shadow: none; padding: 8px; }
+    table.resp > tbody > tr.ct > td { display: block; padding: 0; }
+    table.inner.resp { border: 0; background: none; }
+    table.inner.resp > tbody > tr { box-shadow: none; padding: 8px 12px; margin-bottom: 6px; }
+    table.inner.resp > tbody > tr > td { padding: 2px 0; font-size: 14px; }
+    table.inner.resp td.m-title { font-size: 14px; padding-bottom: 2px; }
+    .nctable { min-width: 0; width: 100%; }
+    .nctable th, .nctable td { padding: 8px 6px; }
+    .nctable td:first-child { font-size: 14px; }
+    .nctable input { width: 100%; max-width: 72px; }
+
+    /* Sửa đoàn */
+    .ebar { margin: -16px -12px 12px; padding: 10px 12px; }
+    .ebar h1 { font-size: 17px; }
+    .ebar .eact { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; background: rgba(255, 255, 255, .97); border-top: 1px solid var(--line); padding: 10px 12px calc(10px + var(--sab)); }
+    .ebar .eact .btn { flex: 1; height: 46px; font-size: 15px; }
+    .pcgrid { grid-template-columns: 1fr; gap: 6px; padding: 10px; }
+    .pch { display: none; }
+    .pcvt { font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; padding: 6px 2px 0; }
+    .slot.na { display: none; }
+    .slot { min-height: 54px; padding-left: 70px; }
+    .slot .tag { display: block; position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 12px; font-weight: 600; color: var(--muted); }
+    .slot.empty { padding-left: 70px; }
+
+    .pkq { top: -14px; margin: -14px -14px 0; padding: 12px 14px 10px; }
+    .pk { grid-template-columns: 1fr auto; grid-template-areas: "n s" "t c"; padding: 12px 4px; }
+
+    /* Cửa sổ dạng tấm trượt từ dưới lên */
+    .modal-bg { padding: 0; align-items: flex-end; }
+    .modal, .modal.wide { max-width: none; border-radius: 18px 18px 0 0; max-height: 94vh; max-height: 94dvh; animation: up .22s ease-out; }
+    .modal .mh { padding: 12px 14px 12px 16px; }
+    .modal .mb { padding: 14px; }
+    .modal .mf { padding: 10px 14px calc(10px + var(--sab)); flex-wrap: wrap; }
+    .modal .mf .btn { flex: 1; }
+    .modal .mf .sp { display: none; }
+    @keyframes up { from { transform: translateY(40%); opacity: .4; } }
+
+    .start { margin-top: 2vh; }
+    .start h1 { font-size: 21px; }
+  }
 
   @media print {
-    header, .toolbar, .noprint, #toast { display: none !important; }
+    header, nav, .toolbar, .filters, .page-head, .noprint, .show-m, #toast, .fab { display: none !important; }
+    .hide-m { display: revert !important; }
     body { background: #fff; }
     main { padding: 0; max-width: none; }
-    .card { border: 0; padding: 0; }
+    .card { border: 0; padding: 0; box-shadow: none; }
     .scroll { overflow: visible; }
     table.bang th { position: static; }
   }
 </style>
 </head>
-<body>
+<body data-tab="start">
 <div id="loading"></div>
 <header>
-  <div class="brand">🩺 Phân công đoàn khám</div>
+  <div class="brand"><span class="logo"><svg class="ic" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M3.22 12H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27"/></svg></span><span>Phân công đoàn khám</span></div>
   <nav id="nav"></nav>
   <div id="fileBox"></div>
 </header>
@@ -164,6 +395,34 @@ const norm = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '
 const pad = n => String(n).padStart(2, '0');
 const money = n => (Number(n) || 0).toLocaleString('vi-VN');
 const TT_NGUNG = 'Ngừng hợp tác';
+
+// Biểu tượng (nét vẽ kiểu Lucide)
+const IC = {
+  cal: '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+  grid: '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>',
+  money: '<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 12h.01M18 12h.01"/>',
+  users: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+  gear: '<path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  down: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5M12 15V3"/>',
+  print: '<path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>',
+  save: '<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/>',
+  back: '<path d="m15 18-6-6 6-6"/>',
+  next: '<path d="m9 18 6-6-6-6"/>',
+  trash: '<path d="M3 6h18M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>',
+  file: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>',
+  folder: '<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>',
+  fplus: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M12 18v-6M9 15h6"/>',
+  undo: '<path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/>',
+  x: '<path d="M18 6 6 18M6 6l12 12"/>',
+  check: '<path d="M20 6 9 17l-5-5"/>',
+  pin: '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
+  clock: '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+  user: '<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+  search: '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+  heart: '<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M3.22 12H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27"/>',
+};
+const ic = n => `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${IC[n]}</svg>`;
 
 let S = { boot: null, tab: 'doan', r: null };
 let E = null; // trạng thái màn hình sửa đoàn
@@ -190,10 +449,11 @@ function toast(msg, kind, ms) {
 function modal(o) {
   const bg = document.createElement('div');
   bg.className = 'modal-bg';
-  bg.innerHTML = `<div class="modal ${o.wide ? 'wide' : ''}"><div class="mh"><span>${o.title}</span><button class="btn ghost" data-close>✕</button></div>
+  bg.innerHTML = `<div class="modal ${o.wide ? 'wide' : ''}"><div class="mh"><span>${o.title}</span><button class="btn ghost sm icon" data-close title="Đóng">${ic('x')}</button></div>
     <div class="mb">${o.body}</div>${o.foot ? `<div class="mf">${o.foot}</div>` : ''}</div>`;
   document.body.appendChild(bg);
-  const close = () => { bg.remove(); document.removeEventListener('keydown', onKey); };
+  document.body.style.overflow = 'hidden';
+  const close = () => { bg.remove(); document.removeEventListener('keydown', onKey); if (!$('.modal-bg')) document.body.style.overflow = ''; };
   const onKey = e => { if (e.key === 'Escape' && o.closeOnBg) close(); };
   document.addEventListener('keydown', onKey);
   bg.addEventListener('click', e => {
@@ -218,30 +478,39 @@ function activeCK() { return S.boot.chuyenKhoa.filter(c => c.HoatDong !== '0'); 
 function ckTen(m) { const c = S.boot.chuyenKhoa.find(x => x.Ma === m); return c ? c.Ten : m; }
 function bsBy(ma) { return S.boot.bacSy.find(b => b.Ma === ma); }
 function stars(n) { n = Math.max(0, Math.min(5, Number(n) || 0)); return `<span class="stars">${'★'.repeat(n)}<span class="off">${'★'.repeat(5 - n)}</span></span>`; }
-function badgeTT(t) { return `<span class="badge st-${Math.max(0, S.boot.trangThaiDoan.indexOf(t))}">${esc(t)}</span>`; }
+function ttIdx(t) { return Math.max(0, S.boot.trangThaiDoan.indexOf(t)); }
+function badgeTT(t) { return `<span class="badge st-${ttIdx(t)}">${esc(t)}</span>`; }
 
+function pageHead(title, sub, acts) {
+  return `<div class="page-head"><div><h1>${title}</h1>${sub != null ? `<div class="sub" id="phSub">${sub}</div>` : ''}</div>${acts ? `<div class="acts">${acts}</div>` : ''}</div>`;
+}
+
+const RG = { w: weekRange, m0: () => monthRange(0), 'm-1': () => monthRange(-1), m1: () => monthRange(1) };
 function rangeHtml() {
-  return `<label class="f">Từ ngày<input type="date" id="rTu" value="${S.r.tu}"></label>
-    <label class="f">Đến ngày<input type="date" id="rDen" value="${S.r.den}"></label>
-    <div class="seg"><button data-rg="w">Tuần này</button><button data-rg="m0">Tháng này</button><button data-rg="m-1">Tháng trước</button><button data-rg="m1">Tháng sau</button></div>`;
+  const b = (v, t) => { const r = RG[v](); return `<button data-rg="${v}" class="${r.tu === S.r.tu && r.den === S.r.den ? 'on' : ''}">${t}</button>`; };
+  return `<div class="range"><label class="f">Từ ngày<input type="date" id="rTu" value="${S.r.tu}"></label>
+    <label class="f">Đến ngày<input type="date" id="rDen" value="${S.r.den}"></label></div>
+    <div class="seg">${b('w', 'Tuần này')}${b('m0', 'Tháng này')}${b('m-1', 'Tháng trước')}${b('m1', 'Tháng sau')}</div>`;
 }
 function bindRange(onChange) {
-  const set = r => { S.r = r; $('#rTu').value = r.tu; $('#rDen').value = r.den; onChange(); };
+  const set = r => {
+    S.r = r; $('#rTu').value = r.tu; $('#rDen').value = r.den;
+    $$('[data-rg]').forEach(b => { const x = RG[b.dataset.rg](); b.classList.toggle('on', x.tu === r.tu && x.den === r.den); });
+    onChange();
+  };
   $('#rTu').onchange = () => set({ tu: $('#rTu').value, den: S.r.den });
   $('#rDen').onchange = () => set({ tu: S.r.tu, den: $('#rDen').value });
-  $$('[data-rg]').forEach(b => b.onclick = () => {
-    const v = b.dataset.rg;
-    set(v === 'w' ? weekRange() : monthRange(Number(v.slice(1))));
-  });
+  $$('[data-rg]').forEach(b => b.onclick = () => set(RG[b.dataset.rg]()));
 }
 
 // ===================== ĐIỀU HƯỚNG =====================
-const TABS = [['doan', '📅 Lịch đoàn khám'], ['bang', '🗂 Bảng phân công'], ['baocao', '💰 Báo cáo công'], ['bacsy', '👨‍⚕️ Bác sỹ'], ['caidat', '⚙️ Cài đặt']];
+const TABS = [['doan', 'cal', 'Lịch đoàn khám', 'Lịch khám'], ['bang', 'grid', 'Bảng phân công', 'Phân công'], ['baocao', 'money', 'Báo cáo công', 'Chấm công'],
+  ['bacsy', 'users', 'Bác sỹ', 'Bác sỹ'], ['caidat', 'gear', 'Cài đặt', 'Cài đặt']];
 const VIEWS = {};
 
 function renderNav() {
   const cur = S.tab === 'editor' ? 'doan' : S.tab;
-  $('#nav').innerHTML = TABS.map(t => `<button data-tab="${t[0]}" class="${t[0] === cur ? 'on' : ''}">${t[1]}</button>`).join('');
+  $('#nav').innerHTML = TABS.map(t => `<button data-tab="${t[0]}" class="${t[0] === cur ? 'on' : ''}">${ic(t[1])}<span class="l">${t[2]}</span><span class="s">${t[3]}</span></button>`).join('');
   $$('#nav button').forEach(b => b.onclick = () => go(b.dataset.tab));
 }
 
@@ -249,6 +518,7 @@ function go(tab, arg) {
   if (S.tab === 'editor' && E && E.dirty && !confirm('Đoàn khám đang sửa chưa được lưu. Bỏ các thay đổi?')) return;
   if (tab !== 'editor') E = null;
   S.tab = tab;
+  document.body.dataset.tab = tab;
   renderNav();
   window.scrollTo(0, 0);
   VIEWS[tab](arg);
@@ -258,9 +528,9 @@ window.addEventListener('beforeunload', e => { if (E && E.dirty) { e.preventDefa
 
 // ===================== 1. LỊCH ĐOÀN KHÁM =====================
 VIEWS.doan = function () {
-  main.innerHTML = `<div class="card">
-    <div class="toolbar">${rangeHtml()}<span class="sp"></span><button class="btn pri" id="btnNew">+ Tạo đoàn khám</button></div>
-    <div id="dsDoan" class="empty-state">Đang tải…</div></div>`;
+  main.innerHTML = pageHead('Lịch đoàn khám', '&nbsp;', `<button class="btn pri fab" id="btnNew">${ic('plus')}Tạo đoàn khám</button>`) +
+    `<div class="card filters">${rangeHtml()}</div>
+    <div id="dsDoan" class="empty-state">Đang tải…</div>`;
   bindRange(loadDoan);
   $('#btnNew').onclick = () => go('editor');
   loadDoan();
@@ -270,23 +540,25 @@ async function loadDoan() {
   const list = await api('listDoan', S.r.tu, S.r.den);
   const el = $('#dsDoan');
   if (!el) return;
-  if (!list.length) { el.className = 'empty-state'; el.innerHTML = 'Chưa có đoàn khám nào trong khoảng thời gian này.'; return; }
-  el.className = 'scroll';
-  let lastDate = '', rows = '';
-  list.forEach(d => {
-    if (d.Ngay !== lastDate) { lastDate = d.Ngay; rows += `<tr class="datehead"><td colspan="7">${fmtNgay(d.Ngay)}</td></tr>`; }
-    const full = d.soCan > 0 && d.soDaXep >= d.soCan;
-    rows += `<tr class="click" data-id="${esc(d.ID)}">
-      <td><b>${esc(d.TenDoan)}</b>${d.GhiChu ? `<div class="small muted">${esc(d.GhiChu)}</div>` : ''}</td>
-      <td>${esc(d.DiaDiem)}</td>
-      <td>${sortKhung(splitList(d.Buoi)).map(tenKhung).join(', ')}</td>
-      <td>${esc(d.TruongDoan)}</td>
-      <td class="num"><span class="progress ${full ? 'full' : 'part'}">${d.soDaXep}/${d.soCan}</span></td>
-      <td>${badgeTT(d.TrangThai)}</td>
-      <td class="num noprint"><button class="btn sm" data-edit="${esc(d.ID)}">Sửa</button> <button class="btn sm danger" data-del="${esc(d.ID)}">Xoá</button></td></tr>`;
-  });
-  el.innerHTML = `<table class="t"><thead><tr><th>Đoàn / đơn vị</th><th>Địa điểm</th><th>Buổi</th><th>Trưởng đoàn</th><th class="num">Đã xếp / cần</th><th>Trạng thái</th><th></th></tr></thead><tbody>${rows}</tbody></table>
-    <div class="small muted" style="margin-top:8px">${list.length} đoàn khám · bấm vào một dòng để sửa / phân công.</div>`;
+  $('#phSub').textContent = list.length ? `${list.length} đoàn khám · bấm vào một đoàn để sửa và phân công` : 'Chưa có đoàn khám';
+  if (!list.length) { el.className = 'card empty-state'; el.innerHTML = 'Chưa có đoàn khám nào trong khoảng thời gian này.'; return; }
+  el.className = '';
+  const groups = [];
+  list.forEach(d => { const g = groups[groups.length - 1]; if (g && g.ngay === d.Ngay) g.ds.push(d); else groups.push({ ngay: d.Ngay, ds: [d] }); });
+  const homNay = today();
+  el.innerHTML = groups.map(g => `<div class="dgroup"><div class="dhead ${g.ngay === homNay ? 'today' : ''}">${ic('cal')}${fmtNgay(g.ngay)}${g.ngay === homNay ? ' · Hôm nay' : ''}</div><div class="dlist">
+    ${g.ds.map(d => {
+      const full = d.soCan > 0 && d.soDaXep >= d.soCan;
+      const pct = d.soCan ? Math.min(100, Math.round(d.soDaXep / d.soCan * 100)) : 0;
+      const buoi = sortKhung(splitList(d.Buoi)).map(tenKhung).join(', ');
+      return `<div class="dcard s${ttIdx(d.TrangThai)}" data-id="${esc(d.ID)}">
+        <div class="dmain"><div class="dname">${esc(d.TenDoan)}</div>
+          <div class="dmeta">${d.DiaDiem ? `<span>${ic('pin')}${esc(d.DiaDiem)}</span>` : ''}${buoi ? `<span>${ic('clock')}${buoi}</span>` : ''}${d.TruongDoan ? `<span>${ic('user')}${esc(d.TruongDoan)}</span>` : ''}</div>
+          ${d.GhiChu ? `<div class="dnote">${esc(d.GhiChu)}</div>` : ''}</div>
+        <div class="dside">${badgeTT(d.TrangThai)}
+          <div class="prog ${full ? 'full' : ''}"><div class="bar"><i style="width:${pct}%"></i></div><div class="tx"><span>Bác sỹ</span><b>${d.soDaXep}/${d.soCan}</b></div></div></div>
+        <button class="btn ghost sm icon del noprint" data-del="${esc(d.ID)}" title="Xoá đoàn">${ic('trash')}</button></div>`;
+    }).join('')}</div></div>`).join('');
   el.onclick = async ev => {
     const del = ev.target.closest('[data-del]');
     if (del) {
@@ -294,8 +566,8 @@ async function loadDoan() {
       if (!confirm(`Xoá đoàn "${d.TenDoan}" ngày ${fmtNgay(d.Ngay)}?\nToàn bộ phân công của đoàn này cũng bị xoá. Nếu chỉ tạm dừng, hãy chuyển trạng thái sang "Huỷ".`)) return;
       await api('deleteDoan', d.ID); toast('Đã xoá đoàn khám', 'ok'); loadDoan(); return;
     }
-    const tr = ev.target.closest('[data-id]');
-    if (tr) go('editor', tr.dataset.id);
+    const c = ev.target.closest('[data-id]');
+    if (c) go('editor', c.dataset.id);
   };
 }
 
@@ -322,22 +594,21 @@ VIEWS.editor = async function (id) {
 };
 
 function fld(f, label, cls, type) {
-  return `<label class="f ${cls || ''}">${label}<input ${type ? `type="${type}" min="0"` : ''} data-f="${f}" value="${esc(E.doan[f])}" ${f === 'TruongDoan' ? 'list="dlBS"' : ''}></label>`;
+  return `<label class="f ${cls || ''}">${label}<input ${type ? `type="${type}" min="0" inputmode="numeric"` : ''} data-f="${f}" value="${esc(E.doan[f])}" ${f === 'TruongDoan' ? 'list="dlBS"' : ''}></label>`;
 }
 
 function renderEditor() {
   const d = E.doan;
   main.innerHTML = `
-  <div class="toolbar" style="align-items:center">
-    <button class="btn" id="eBack">← Danh sách đoàn</button>
-    <h2 id="eTitle">${d.ID ? 'Sửa đoàn khám' : 'Tạo đoàn khám mới'}</h2>
+  <div class="ebar">
+    <button class="btn ghost icon" id="eBack" title="Về danh sách đoàn">${ic('back')}</button>
+    <h1 id="eTitle">${d.ID ? 'Sửa đoàn khám' : 'Tạo đoàn khám mới'}</h1>
+    <span id="eDirty" class="dirty"></span>
     <span class="sp"></span>
-    <span id="eDirty" class="small warn"></span>
-    ${d.ID ? '<button class="btn danger" id="eDel">Xoá đoàn</button>' : ''}
-    <button class="btn" id="eSaveBack">Lưu & về danh sách</button>
-    <button class="btn pri" id="eSave">💾 Lưu</button>
+    ${d.ID ? `<button class="btn ghost icon danger" id="eDel" title="Xoá đoàn">${ic('trash')}</button>` : ''}
+    <div class="eact"><button class="btn" id="eSaveBack">Lưu & về danh sách</button><button class="btn pri" id="eSave">${ic('save')}Lưu</button></div>
   </div>
-  <div class="card"><h3>1. Thông tin đoàn</h3>
+  <div class="card"><h3><span class="step">1</span>Thông tin đoàn</h3>
     <div class="grid">
       ${fld('TenDoan', 'Tên đoàn / đơn vị được khám *', 'span2')}
       <label class="f">Ngày khám *<input type="date" data-f="Ngay" value="${esc(d.Ngay)}"></label>
@@ -349,13 +620,13 @@ function renderEditor() {
       ${fld('GhiChu', 'Ghi chú', 'span2')}
     </div>
     <datalist id="dlBS">${S.boot.bacSy.filter(b => b.TrangThai !== TT_NGUNG).map(b => `<option value="${esc(b.HoTen)}">`).join('')}</datalist>
-    <div style="margin-top:14px"><div class="lbl">Các buổi khám *</div>
-      ${khungList().map(k => `<label class="pill"><input type="checkbox" data-buoi="${k.ma}" ${E.buoi.includes(k.ma) ? 'checked' : ''}><b>${k.ten}</b><span class="muted small">${k.gio}</span></label>`).join('')}
+    <div style="margin-top:16px"><div class="lbl">Các buổi khám *</div>
+      <div class="pills cols">${khungList().map(k => `<label class="pill"><input type="checkbox" data-buoi="${k.ma}" ${E.buoi.includes(k.ma) ? 'checked' : ''}><span class="k"><b>${k.ten}</b><span class="muted small">${k.gio}</span></span></label>`).join('')}</div>
     </div>
   </div>
-  <div class="card"><h3>2. Số bác sỹ cần theo chuyên khoa và buổi</h3><div id="eNC"></div></div>
-  <div class="card"><h3>3. Phân công bác sỹ <span id="ePCsum" class="muted" style="font-weight:400"></span></h3>
-    <div class="small muted" style="margin:-6px 0 12px">Bấm vào ô để chọn bác sỹ. Danh sách gợi ý xếp theo: còn rảnh → nhiều sao hơn → đi khám nhiều hơn. Chọn bác sỹ cho 1 buổi sẽ tự điền cho các buổi khác cùng vị trí (nếu còn trống và bác sỹ rảnh).</div>
+  <div class="card"><h3><span class="step">2</span>Số bác sỹ cần theo chuyên khoa</h3><div id="eNC"></div></div>
+  <div class="card"><h3><span class="step">3</span><span>Phân công bác sỹ <span id="ePCsum" class="muted small" style="font-weight:400"></span></span></h3>
+    <div class="hint">Bấm vào ô để chọn bác sỹ. Gợi ý xếp theo: còn rảnh → nhiều sao hơn → đi khám nhiều hơn. Chọn bác sỹ cho 1 buổi sẽ tự điền cho các buổi khác cùng vị trí (nếu còn trống và bác sỹ rảnh).</div>
     <div id="ePC"></div></div>`;
 
   $$('[data-f]').forEach(inp => {
@@ -396,11 +667,11 @@ function renderNC() {
   const el = $('#eNC');
   if (!E.buoi.length) { el.innerHTML = '<div class="muted">Hãy chọn ít nhất 1 buổi khám ở mục 1.</div>'; return; }
   const cks = ckEditor(), first = E.buoi[0];
-  el.innerHTML = `<div class="scroll"><table class="t" style="width:auto;min-width:420px"><thead><tr><th>Chuyên khoa</th>
-      ${E.buoi.map(k => `<th class="num" style="width:120px">${tenKhung(k)}</th>`).join('')}</tr></thead><tbody>
-      ${cks.map(c => `<tr><td>${esc(c.Ten)}</td>${E.buoi.map(k => `<td class="num"><input type="number" min="0" max="50" style="width:80px;text-align:right" class="ncin" data-k="${k}" data-ck="${esc(c.Ma)}" value="${need(k, c.Ma) || ''}" placeholder="0"></td>`).join('')}</tr>`).join('')}
+  el.innerHTML = `<div class="scroll"><table class="t nctable"><thead><tr><th>Chuyên khoa</th>
+      ${E.buoi.map(k => `<th class="num" style="text-align:center !important">${tenKhung(k)}</th>`).join('')}</tr></thead><tbody>
+      ${cks.map(c => `<tr><td>${esc(c.Ten)}</td>${E.buoi.map(k => `<td style="text-align:center"><input type="number" inputmode="numeric" min="0" max="50" class="ncin" data-k="${k}" data-ck="${esc(c.Ma)}" value="${need(k, c.Ma) || ''}" placeholder="0"></td>`).join('')}</tr>`).join('')}
     </tbody></table></div>
-    ${E.buoi.length > 1 ? `<div style="margin-top:10px"><button class="btn sm" id="ncCopy">⇉ Các buổi khác giống buổi ${tenKhung(first)}</button></div>` : ''}`;
+    ${E.buoi.length > 1 ? `<div style="margin-top:12px"><button class="btn sm" id="ncCopy">Các buổi khác giống buổi ${tenKhung(first)}</button></div>` : ''}`;
   $$('.ncin', el).forEach(i => i.oninput = () => { setNeed(i.dataset.k, i.dataset.ck, i.value); markDirty(); renderPC(); });
   if ($('#ncCopy')) $('#ncCopy').onclick = () => {
     E.buoi.slice(1).forEach(k => cks.forEach(c => setNeed(k, c.Ma, need(first, c.Ma))));
@@ -434,27 +705,28 @@ function renderPC() {
   const html = ckEditor().map(c => {
     const max = Math.max(0, ...E.buoi.map(k => need(k, c.Ma)));
     if (!max) return '';
-    let rows = '';
+    let cells = '';
     for (let i = 1; i <= max; i++) {
-      rows += `<tr><td class="muted small" style="width:70px;padding-top:20px">Vị trí ${i}</td>` + E.buoi.map(k => {
-        if (i > need(k, c.Ma)) return '<td><div class="slot na">—</div></td>';
+      cells += `<div class="pcvt">Vị trí ${i}</div>` + E.buoi.map(k => {
+        if (i > need(k, c.Ma)) return '<div class="slot na">—</div>';
         tong++;
+        const tag = `<span class="tag">${tenKhung(k)}</span>`;
         const key = slotKey(k, c.Ma, i), ma = E.pc[key];
-        if (!ma) return `<td><button class="slot empty" data-pick="${esc(key)}">+ Chọn bác sỹ</button></td>`;
+        if (!ma) return `<button class="slot empty" data-pick="${esc(key)}">${tag}${ic('plus')}Chọn bác sỹ</button>`;
         xep++;
         const b = bsBy(ma) || { HoTen: ma, Sao: 0 };
         const st = E.ctx ? trangThaiBS(ma, k, c.Ma, i) : { loai: 'ranh', text: '' };
         const cls = st.loai === 'ban' ? 'warn' : (st.loai === 'trung' || st.loai === 'trungvt') ? 'bad' : '';
-        return `<td><div class="slot full ${cls}" data-pick="${esc(key)}"><div><b>${esc(b.HoTen)}</b> ${stars(b.Sao)}</div>
+        return `<div class="slot full ${cls}" data-pick="${esc(key)}">${tag}<div><b>${esc(b.HoTen)}</b> ${stars(b.Sao)}</div>
           ${st.text ? `<div class="small ${cls || 'muted'}">${esc(st.text)}</div>` : ''}
-          <button class="x" data-clear="${esc(key)}" title="Bỏ chọn">×</button></div></td>`;
-      }).join('') + '</tr>';
+          <button class="x" data-clear="${esc(key)}" title="Bỏ chọn">${ic('x')}</button></div>`;
+      }).join('');
     }
-    return `<div class="ckblock"><div class="ckhead">${esc(c.Ten)} <span class="muted small" style="font-weight:400">— cần ${E.buoi.map(k => tenKhung(k) + ': ' + need(k, c.Ma)).join(' · ')}</span></div>
-      <div class="scroll"><table class="t pc"><thead><tr><th></th>${E.buoi.map(k => `<th>${tenKhung(k)} <span style="font-weight:400">${gioKhung(k)}</span></th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div></div>`;
+    return `<div class="ckblock"><div class="ckhead"><b>${esc(c.Ten)}</b><span>Cần ${E.buoi.map(k => tenKhung(k) + ' ' + need(k, c.Ma)).join(' · ')}</span></div>
+      <div class="scroll"><div class="pcgrid" style="--n:${E.buoi.length}"><div class="pch"></div>${E.buoi.map(k => `<div class="pch">${tenKhung(k)} <span>${gioKhung(k)}</span></div>`).join('')}${cells}</div></div></div>`;
   }).join('');
   el.innerHTML = html || '<div class="muted">Nhập số bác sỹ cần ở mục 2 để bắt đầu phân công.</div>';
-  $('#ePCsum').innerHTML = tong ? `— đã xếp <b class="${xep >= tong ? 'ok' : 'warn'}">${xep}/${tong}</b> vị trí` : '';
+  $('#ePCsum').innerHTML = tong ? `· đã xếp <b class="${xep >= tong ? 'ok' : 'warn'}">${xep}/${tong}</b> vị trí` : '';
   el.onclick = ev => {
     const x = ev.target.closest('[data-clear]');
     if (x) { delete E.pc[x.dataset.clear]; markDirty(); renderPC(); return; }
@@ -476,26 +748,26 @@ function openPicker(k, ck, i) {
   items.forEach(it => { it.ok = rank[it.st.loai] < 2; if (rank[it.st.loai] === 0 && it.b.Ma !== cur && g < 3) { it.goiY = true; g++; } });
   const soNgay = S.boot.cauHinh.SoNgayTinhChamChi || 90;
   const m = modal({
-    title: `Chọn bác sỹ · ${esc(ckTen(ck))} · Buổi ${tenKhung(k)} (${gioKhung(k)}) · Vị trí ${i}`,
+    title: `${esc(ckTen(ck))} · ${tenKhung(k)} <span class="muted" style="font-weight:400">(${gioKhung(k)}) · Vị trí ${i}</span>`,
     wide: true, closeOnBg: true,
-    body: `<div class="toolbar" style="align-items:center"><input id="pkQ" placeholder="Tìm theo tên hoặc mã…" style="flex:1;min-width:200px">
-      <span class="small muted">Cột "buổi" = số buổi đã khám trong ${soNgay} ngày trước ngày khám</span></div>
-      <div id="pkL" style="border-top:1px solid var(--line)"></div>`,
+    body: `<div class="pkq"><input id="pkQ" type="search" placeholder="Tìm theo tên hoặc mã…">
+      <div class="small muted" style="margin-top:6px">Số buổi = số buổi đã khám trong ${soNgay} ngày trước ngày khám</div></div>
+      <div id="pkL"></div>`,
   });
   const draw = () => {
     const q = norm($('#pkQ', m.el).value);
     const rows = items.filter(it => !q || norm(it.b.HoTen + ' ' + it.b.Ma).includes(q));
     $('#pkL', m.el).innerHTML = rows.map(it => `<div class="pk ${it.ok ? '' : 'dis'} ${it.b.Ma === cur ? 'cur' : ''}" data-ma="${it.ok ? esc(it.b.Ma) : ''}">
-        <div><b>${esc(it.b.HoTen)}</b> <span class="muted small">${esc(it.b.HocVi)} · ${esc(it.b.Ma)}</span>
+        <div class="pk-n"><b>${esc(it.b.HoTen)}</b> <span class="muted small">${esc(it.b.HocVi)} · ${esc(it.b.Ma)}</span>
           ${it.goiY ? ' <span class="badge st-ok">Gợi ý</span>' : ''}${it.b.Ma === cur ? ' <span class="badge st-1">Đang chọn</span>' : ''}</div>
-        <div>${stars(it.b.Sao)}</div>
-        <div class="num small muted">${it.n} buổi</div>
+        <div class="pk-s">${stars(it.b.Sao)}</div>
+        <div class="pk-c num small muted">${it.n} buổi</div>
         <div class="pks ${it.st.loai}">${esc(it.st.text || '✓ Rảnh')}</div></div>`).join('')
       || `<div class="empty-state">Không có bác sỹ nào thuộc chuyên khoa "${esc(ckTen(ck))}"${q ? ' khớp tìm kiếm' : ''}.<br>Kiểm tra chuyên khoa của bác sỹ ở mục Bác sỹ.</div>`;
   };
   draw();
   $('#pkQ', m.el).oninput = draw;
-  $('#pkQ', m.el).focus();
+  if (matchMedia('(min-width: 761px)').matches) $('#pkQ', m.el).focus();
   $('#pkL', m.el).onclick = ev => {
     const r = ev.target.closest('.pk');
     if (!r || !r.dataset.ma) return;
@@ -561,14 +833,11 @@ async function luuDoan(veDanhSach) {
 let bangTT = null;
 VIEWS.bang = function () {
   if (!bangTT) bangTT = S.boot.trangThaiDoan.filter(t => t !== 'Huỷ');
-  main.innerHTML = `<div class="card">
-    <div class="toolbar">${rangeHtml()}
-      <div><div class="lbl">Trạng thái đoàn</div>${S.boot.trangThaiDoan.map(t => `<label class="pill" style="padding:5px 9px;margin-bottom:0"><input type="checkbox" data-tt="${t}" ${bangTT.includes(t) ? 'checked' : ''}>${t}</label>`).join('')}</div>
-      <span class="sp"></span>
-      <button class="btn" id="bIn">🖨 In</button>
-      <button class="btn pri" id="bXuat">⬇ Xuất Excel</button>
+  main.innerHTML = pageHead('Bảng phân công', null, `<button class="btn hide-m" id="bIn">${ic('print')}In</button><button class="btn pri" id="bXuat">${ic('down')}Xuất Excel</button>`) +
+    `<div class="card filters">${rangeHtml()}
+      <div><div class="lbl">Trạng thái đoàn</div><div class="pills">${S.boot.trangThaiDoan.map(t => `<label class="pill sm"><input type="checkbox" data-tt="${t}" ${bangTT.includes(t) ? 'checked' : ''}>${t}</label>`).join('')}</div></div>
     </div>
-    <div id="bangOut" class="empty-state">Đang tải…</div></div>`;
+    <div id="bangOut" class="empty-state">Đang tải…</div>`;
   bindRange(loadBang);
   $$('[data-tt]').forEach(cb => cb.onchange = () => { bangTT = $$('[data-tt]').filter(x => x.checked).map(x => x.dataset.tt); loadBang(); });
   $('#bIn').onclick = () => window.print();
@@ -582,34 +851,41 @@ async function loadBang() {
   const data = await api('getBangPhanCong', S.r.tu, S.r.den, bangTT);
   const el = $('#bangOut');
   if (!el) return;
-  if (!data.cot.length) { el.className = 'empty-state'; el.innerHTML = 'Không có đoàn nào trong khoảng thời gian / trạng thái đã chọn.'; return; }
-  el.className = 'scroll';
+  if (!data.cot.length) { el.className = 'card empty-state'; el.innerHTML = 'Không có đoàn nào trong khoảng thời gian / trạng thái đã chọn.'; return; }
+  el.className = '';
   const head = (label, fn) => `<tr class="h"><th>${label}</th>${data.cot.map(c => `<td>${fn(c)}</td>`).join('')}</tr>`;
-  el.innerHTML = `<h3 style="margin:0 0 10px">BẢNG PHÂN CÔNG ĐOÀN KHÁM (${fmtNgay(data.tu)} – ${fmtNgay(data.den)})</h3>
-    <table class="bang">
+  const oHtml = (c, ck) => `${esc(c.o[ck.Ma]).replace(/\n/g, '<br>')}${c.thieu[ck.Ma] ? `<div class="thieu noprint">Thiếu: ${esc(c.thieu[ck.Ma])}</div>` : ''}`;
+  const desk = `<div class="card tcard hide-m"><div class="bang-title">BẢNG PHÂN CÔNG ĐOÀN KHÁM (${fmtNgay(data.tu)} – ${fmtNgay(data.den)})</div>
+    <div class="scroll"><table class="bang">
     ${head('Tên đoàn', c => `<a href="#" data-open="${esc(c.doan.ID)}"><b>${esc(c.doan.TenDoan)}</b></a> <span class="noprint">${badgeTT(c.doan.TrangThai)}</span>`)}
     ${head('Ngày', c => esc(fmtNgay(c.doan.Ngay)))}
     ${head('Địa điểm', c => esc(c.doan.DiaDiem))}
     ${head('Buổi', c => esc(c.buoiText))}
     ${head('Số người dự kiến', c => esc(c.doan.SoNguoi))}
     ${head('Trưởng đoàn', c => esc(c.doan.TruongDoan))}
-    ${data.chuyenKhoa.map(ck => `<tr><th>${esc(ck.Ten)}</th>${data.cot.map(c => `<td>${esc(c.o[ck.Ma]).replace(/\n/g, '<br>')}${c.thieu[ck.Ma] ? `<div class="thieu noprint">Thiếu: ${esc(c.thieu[ck.Ma])}</div>` : ''}</td>`).join('')}</tr>`).join('')}
-    </table>
-    <div class="small muted noprint" style="margin-top:8px">${data.cot.length} đoàn · (S) sáng, (C) chiều, (T) tối · bấm tên đoàn để sửa.</div>`;
+    ${data.chuyenKhoa.map(ck => `<tr><th>${esc(ck.Ten)}</th>${data.cot.map(c => `<td>${oHtml(c, ck)}</td>`).join('')}</tr>`).join('')}
+    </table></div>
+    <div class="foot noprint">${data.cot.length} đoàn · (S) sáng, (C) chiều, (T) tối · bấm tên đoàn để sửa.</div></div>`;
+  const mob = `<div class="bcards show-m">${data.cot.map(c => {
+    const meta = [['Ngày', fmtNgay(c.doan.Ngay)], ['Địa điểm', c.doan.DiaDiem], ['Buổi', c.buoiText], ['Số người', c.doan.SoNguoi], ['Trưởng đoàn', c.doan.TruongDoan]].filter(x => x[1]);
+    const cks = data.chuyenKhoa.filter(ck => c.o[ck.Ma] || c.thieu[ck.Ma]);
+    return `<div class="bcard"><div class="bh"><div class="n"><span>${esc(c.doan.TenDoan)}</span>${badgeTT(c.doan.TrangThai)}</div></div>
+      <dl style="padding-top:10px">${meta.map(x => `<dt>${x[0]}</dt><dd>${esc(x[1])}</dd>`).join('')}</dl>
+      ${cks.length ? `<div class="sec">Bác sỹ</div><dl>${cks.map(ck => `<dt>${esc(ck.Ten)}</dt><dd>${oHtml(c, ck)}</dd>`).join('')}</dl>` : ''}
+      <div style="padding:0 14px 12px"><button class="btn sm" data-open="${esc(c.doan.ID)}">Sửa đoàn ${ic('next')}</button></div></div>`;
+  }).join('')}<div class="small muted" style="padding:0 4px">${data.cot.length} đoàn · (S) sáng, (C) chiều, (T) tối</div></div>`;
+  el.innerHTML = desk + mob;
   el.onclick = ev => { const a = ev.target.closest('[data-open]'); if (a) { ev.preventDefault(); go('editor', a.dataset.open); } };
 }
 
 // ===================== 3. BÁO CÁO CÔNG =====================
 let bcDaChot = false;
 VIEWS.baocao = function () {
-  main.innerHTML = `<div class="card">
-    <div class="toolbar">${rangeHtml()}
-      <label class="pill" style="margin-bottom:0"><input type="checkbox" id="bcChot" ${bcDaChot ? 'checked' : ''}>Tính cả đoàn "Đã chốt" (chưa hoàn thành)</label>
-      <span class="sp"></span>
-      <button class="btn pri" id="bcXuat">⬇ Xuất Excel</button>
+  main.innerHTML = pageHead('Báo cáo công', 'Mỗi bác sỹ × mỗi buổi × mỗi đoàn = 1 công (kiêm nhiều chuyên khoa vẫn 1 công)', `<button class="btn pri" id="bcXuat">${ic('down')}Xuất Excel</button>`) +
+    `<div class="card filters">${rangeHtml()}
+      <label class="pill"><input type="checkbox" id="bcChot" ${bcDaChot ? 'checked' : ''}>Tính cả đoàn “Đã chốt”</label>
     </div>
-    <div class="small muted" style="margin:-4px 0 10px">Mặc định chỉ tính các đoàn có trạng thái "Hoàn thành". Mỗi bác sỹ × mỗi buổi × mỗi đoàn = 1 công (kiêm nhiều chuyên khoa vẫn 1 công).</div>
-    <div id="bcOut" class="empty-state">Đang tải…</div></div>`;
+    <div id="bcOut" class="empty-state">Đang tải…</div>`;
   bindRange(loadBC);
   $('#bcChot').onchange = () => { bcDaChot = $('#bcChot').checked; loadBC(); };
   $('#bcXuat').onclick = async () => {
@@ -622,24 +898,27 @@ async function loadBC() {
   const d = await api('getBaoCao', S.r.tu, S.r.den, bcDaChot);
   const el = $('#bcOut');
   if (!el) return;
-  if (!d.tongHop.length) { el.className = 'empty-state'; el.innerHTML = 'Không có công khám nào trong khoảng thời gian này.<br><span class="small">Lưu ý: đoàn phải ở trạng thái "Hoàn thành" mới được tính công.</span>'; return; }
-  el.className = 'scroll';
+  if (!d.tongHop.length) { el.className = 'card empty-state'; el.innerHTML = 'Không có công khám nào trong khoảng thời gian này.<br><span class="small">Mặc định chỉ tính các đoàn ở trạng thái “Hoàn thành”.</span>'; return; }
+  el.className = '';
   const sum = f => d.tongHop.reduce((s, t) => s + t[f], 0);
-  el.innerHTML = `<table class="t"><thead><tr><th>#</th><th>Bác sỹ</th><th>Học vị</th><th>Số tài khoản</th><th class="num">Sáng</th><th class="num">Chiều</th><th class="num">Tối</th><th class="num">Tổng buổi</th><th class="num">Thành tiền (đ)</th></tr></thead>
-    <tbody>${d.tongHop.map((t, i) => `<tr class="click" data-ma="${esc(t.MaBS)}"><td class="muted">${i + 1}</td><td><b>${esc(t.HoTen)}</b> <span class="muted small">${esc(t.MaBS)}</span></td><td>${esc(t.HocVi)}</td>
-      <td>${esc(t.SoTaiKhoan)}${t.NganHang ? ` <span class="muted small">${esc(t.NganHang)}</span>` : ''}</td>
-      <td class="num">${t.S || ''}</td><td class="num">${t.C || ''}</td><td class="num">${t.T || ''}</td><td class="num"><b>${t.Tong}</b></td><td class="num">${money(t.ThanhTien)}</td></tr>
-      <tr class="ct" data-ct="${esc(t.MaBS)}" hidden><td></td><td colspan="8"></td></tr>`).join('')}</tbody>
-    <tfoot><tr><td></td><td>Tổng cộng (${d.tongHop.length} bác sỹ)</td><td></td><td></td><td class="num">${sum('S')}</td><td class="num">${sum('C')}</td><td class="num">${sum('T')}</td><td class="num">${sum('Tong')}</td><td class="num">${money(sum('ThanhTien'))}</td></tr></tfoot></table>
-    <div class="small muted" style="margin-top:8px">Bấm vào một bác sỹ để xem chi tiết từng buổi.</div>`;
+  el.innerHTML = `<div class="stats"><div class="stat"><div class="v">${d.tongHop.length}</div><div class="l">Bác sỹ</div></div>
+      <div class="stat"><div class="v">${sum('Tong')}</div><div class="l">Tổng buổi</div></div>
+      <div class="stat"><div class="v">${money(sum('ThanhTien'))}</div><div class="l">Thành tiền (đ)</div></div></div>
+    <div class="card tcard respc"><div class="scroll"><table class="t resp"><thead><tr><th>#</th><th>Bác sỹ</th><th>Học vị</th><th>Số tài khoản</th><th class="num">Sáng</th><th class="num">Chiều</th><th class="num">Tối</th><th class="num">Tổng buổi</th><th class="num">Thành tiền (đ)</th></tr></thead>
+    <tbody>${d.tongHop.map((t, i) => `<tr class="click" data-ma="${esc(t.MaBS)}"><td class="muted m-hide">${i + 1}</td><td class="m-title"><b>${esc(t.HoTen)}</b> <span class="muted small">${esc(t.MaBS)}</span></td><td data-l="Học vị">${esc(t.HocVi)}</td>
+      <td data-l="Số tài khoản">${esc(t.SoTaiKhoan)}${t.NganHang ? ` <span class="muted small">${esc(t.NganHang)}</span>` : ''}</td>
+      <td class="num" data-l="Sáng">${t.S || ''}</td><td class="num" data-l="Chiều">${t.C || ''}</td><td class="num" data-l="Tối">${t.T || ''}</td><td class="num" data-l="Tổng buổi"><b>${t.Tong}</b></td><td class="num" data-l="Thành tiền"><b>${money(t.ThanhTien)}</b></td></tr>
+      <tr class="ct" data-ct="${esc(t.MaBS)}" hidden><td class="m-hide"></td><td colspan="8"></td></tr>`).join('')}</tbody>
+    <tfoot class="hide-m"><tr><td></td><td>Tổng cộng (${d.tongHop.length} bác sỹ)</td><td></td><td></td><td class="num">${sum('S')}</td><td class="num">${sum('C')}</td><td class="num">${sum('T')}</td><td class="num">${sum('Tong')}</td><td class="num">${money(sum('ThanhTien'))}</td></tr></tfoot></table></div>
+    <div class="foot">Bấm vào một bác sỹ để xem chi tiết từng buổi.</div></div>`;
   el.onclick = ev => {
     const tr = ev.target.closest('tr.click');
     if (!tr) return;
     const ct = $(`tr[data-ct="${CSS.escape(tr.dataset.ma)}"]`, el);
     if (!ct.hidden) { ct.hidden = true; return; }
     const rows = d.chiTiet.filter(c => c.MaBS === tr.dataset.ma);
-    ct.lastElementChild.innerHTML = `<table class="t" style="background:#fbfcfe"><thead><tr><th>Ngày</th><th>Buổi</th><th>Đoàn</th><th>Địa điểm</th><th>Chuyên khoa</th><th class="num">Đơn giá</th></tr></thead><tbody>
-      ${rows.map(c => `<tr><td>${fmtNgay(c.Ngay)}</td><td>${tenKhung(c.Khung)}</td><td>${esc(c.TenDoan)}${c.TrangThai !== 'Hoàn thành' ? ' ' + badgeTT(c.TrangThai) : ''}</td><td>${esc(c.DiaDiem)}</td><td>${esc(c.ChuyenKhoa)}</td><td class="num">${money(c.DonGia)}</td></tr>`).join('')}</tbody></table>`;
+    ct.lastElementChild.innerHTML = `<table class="t inner resp"><thead><tr><th>Ngày</th><th>Buổi</th><th>Đoàn</th><th>Địa điểm</th><th>Chuyên khoa</th><th class="num">Đơn giá</th></tr></thead><tbody>
+      ${rows.map(c => `<tr><td class="m-title"><b>${fmtNgay(c.Ngay)}</b> <span class="show-m muted" style="font-weight:400">· ${tenKhung(c.Khung)}</span></td><td class="m-hide">${tenKhung(c.Khung)}</td><td data-l="Đoàn">${esc(c.TenDoan)}${c.TrangThai !== 'Hoàn thành' ? ' ' + badgeTT(c.TrangThai) : ''}</td><td data-l="Địa điểm">${esc(c.DiaDiem)}</td><td data-l="Chuyên khoa">${esc(c.ChuyenKhoa)}</td><td class="num" data-l="Đơn giá">${money(c.DonGia)}</td></tr>`).join('')}</tbody></table>`;
     ct.hidden = false;
   };
 }
@@ -647,13 +926,12 @@ async function loadBC() {
 // ===================== 4. BÁC SỸ =====================
 let bsLoc = { q: '', ck: '', tt: 'Đang hợp tác' };
 VIEWS.bacsy = function () {
-  main.innerHTML = `<div class="card">
-    <div class="toolbar">
-      <label class="f">Tìm kiếm<input id="bsQ" placeholder="Tên, mã, SĐT…" value="${esc(bsLoc.q)}" style="width:220px"></label>
-      <label class="f">Chuyên khoa<select id="bsCK"><option value="">Tất cả</option>${S.boot.chuyenKhoa.map(c => `<option value="${esc(c.Ma)}" ${c.Ma === bsLoc.ck ? 'selected' : ''}>${esc(c.Ten)}</option>`).join('')}</select></label>
-      <label class="f">Trạng thái<select id="bsTT"><option value="">Tất cả</option>${S.boot.trangThaiBS.map(t => `<option ${t === bsLoc.tt ? 'selected' : ''}>${t}</option>`).join('')}</select></label>
-      <span class="sp"></span><button class="btn pri" id="bsNew">+ Thêm bác sỹ</button>
-    </div><div id="bsOut"></div></div>`;
+  main.innerHTML = pageHead('Bác sỹ', '&nbsp;', `<button class="btn pri fab" id="bsNew">${ic('plus')}Thêm bác sỹ</button>`) +
+    `<div class="card filters">
+      <label class="f" style="flex:2 1 220px">Tìm kiếm<input id="bsQ" type="search" placeholder="Tên, mã, số điện thoại…" value="${esc(bsLoc.q)}"></label>
+      <label class="f" style="flex:1 1 150px">Chuyên khoa<select id="bsCK"><option value="">Tất cả</option>${S.boot.chuyenKhoa.map(c => `<option value="${esc(c.Ma)}" ${c.Ma === bsLoc.ck ? 'selected' : ''}>${esc(c.Ten)}</option>`).join('')}</select></label>
+      <label class="f" style="flex:1 1 150px">Trạng thái<select id="bsTT"><option value="">Tất cả</option>${S.boot.trangThaiBS.map(t => `<option ${t === bsLoc.tt ? 'selected' : ''}>${t}</option>`).join('')}</select></label>
+    </div><div id="bsOut"></div>`;
   $('#bsQ').oninput = () => { bsLoc.q = $('#bsQ').value; drawBS(); };
   $('#bsCK').onchange = () => { bsLoc.ck = $('#bsCK').value; drawBS(); };
   $('#bsTT').onchange = () => { bsLoc.tt = $('#bsTT').value; drawBS(); };
@@ -668,13 +946,14 @@ function drawBS() {
   const list = S.boot.bacSy
     .filter(b => (!bsLoc.tt || b.TrangThai === bsLoc.tt) && (!bsLoc.ck || splitList(b.ChuyenKhoa).includes(bsLoc.ck)) && (!q || norm(b.HoTen + ' ' + b.Ma + ' ' + b.SDT).includes(q)))
     .sort((a, b) => a.Ma.localeCompare(b.Ma));
-  if (!list.length) { el.innerHTML = '<div class="empty-state">Không có bác sỹ nào. Bấm "+ Thêm bác sỹ" để bắt đầu.</div>'; return; }
-  el.innerHTML = `<div class="scroll"><table class="t"><thead><tr><th>Mã</th><th>Họ tên</th><th>Học vị</th><th>Chuyên khoa</th><th>Ưu tiên</th><th>Số điện thoại</th><th>Trạng thái</th></tr></thead><tbody>
-    ${list.map(b => `<tr class="click" data-ma="${esc(b.Ma)}"><td class="muted">${esc(b.Ma)}</td><td><b>${esc(b.HoTen)}</b>${b.GhiChu ? `<div class="small muted">${esc(b.GhiChu)}</div>` : ''}</td><td>${esc(b.HocVi)}</td>
-      <td>${splitList(b.ChuyenKhoa).map(m => `<span class="chip">${esc(ckTen(m))}</span>`).join('')}</td><td>${stars(b.Sao)}</td><td>${esc(b.SDT)}</td>
-      <td>${b.TrangThai === TT_NGUNG ? `<span class="badge st-3" style="text-decoration:none">${esc(b.TrangThai)}</span>` : `<span class="badge st-2">${esc(b.TrangThai)}</span>`}</td></tr>`).join('')}
-    </tbody></table></div><div class="small muted" style="margin-top:8px">${list.length} / ${S.boot.bacSy.length} bác sỹ</div>`;
-  el.onclick = ev => { const tr = ev.target.closest('[data-ma]'); if (tr) moBacSy(tr.dataset.ma); };
+  $('#phSub').textContent = `${list.length} / ${S.boot.bacSy.length} bác sỹ`;
+  if (!list.length) { el.innerHTML = '<div class="card empty-state">Không có bác sỹ nào. Bấm “Thêm bác sỹ” để bắt đầu.</div>'; return; }
+  el.innerHTML = `<div class="card tcard respc"><div class="scroll"><table class="t resp"><thead><tr><th>Mã</th><th>Họ tên</th><th>Học vị</th><th>Chuyên khoa</th><th>Ưu tiên</th><th>Số điện thoại</th><th>Trạng thái</th></tr></thead><tbody>
+    ${list.map(b => `<tr class="click" data-ma="${esc(b.Ma)}"><td class="muted m-hide">${esc(b.Ma)}</td><td class="m-title"><b>${esc(b.HoTen)}</b><span class="show-m muted small" style="font-weight:400"> · ${esc(b.Ma)}</span>${b.GhiChu ? `<div class="small muted">${esc(b.GhiChu)}</div>` : ''}</td><td data-l="Học vị">${esc(b.HocVi)}</td>
+      <td data-l="Chuyên khoa"><span class="chips">${splitList(b.ChuyenKhoa).map(m => `<span class="chip">${esc(ckTen(m))}</span>`).join('')}</span></td><td data-l="Ưu tiên">${stars(b.Sao)}</td><td data-l="Điện thoại">${b.SDT ? `<a href="tel:${esc(b.SDT)}" style="color:inherit">${esc(b.SDT)}</a>` : ''}</td>
+      <td data-l="Trạng thái">${b.TrangThai === TT_NGUNG ? `<span class="badge st-3">${esc(b.TrangThai)}</span>` : `<span class="badge st-2">${esc(b.TrangThai)}</span>`}</td></tr>`).join('')}
+    </tbody></table></div></div>`;
+  el.onclick = ev => { if (ev.target.closest('a[href^="tel:"]')) return; const tr = ev.target.closest('[data-ma]'); if (tr) moBacSy(tr.dataset.ma); };
 }
 
 function moBacSy(ma) {
@@ -682,24 +961,24 @@ function moBacSy(ma) {
   const cks = splitList(b.ChuyenKhoa);
   const inp = (f, label, extra) => `<label class="f">${label}<input data-b="${f}" value="${esc(b[f])}" ${extra || ''}></label>`;
   const m = modal({
-    title: ma ? `Bác sỹ ${esc(b.HoTen)}` : 'Thêm bác sỹ', wide: true,
+    title: ma ? esc(b.HoTen) : 'Thêm bác sỹ', wide: true,
     body: `<div class="grid">
         ${inp('Ma', 'Mã bác sỹ', ma ? 'disabled' : 'placeholder="Để trống: tự tạo (BS001…)"')}
         ${inp('HoTen', 'Họ tên *')}
         ${inp('HocVi', 'Học vị', 'list="dlHocVi"')}
-        ${inp('SDT', 'Số điện thoại')}
-        ${inp('SoTaiKhoan', 'Số tài khoản ngân hàng')}
+        ${inp('SDT', 'Số điện thoại', 'type="tel" inputmode="tel"')}
+        ${inp('SoTaiKhoan', 'Số tài khoản ngân hàng', 'inputmode="numeric"')}
         ${inp('NganHang', 'Ngân hàng')}
         <label class="f">Trạng thái<select data-b="TrangThai">${S.boot.trangThaiBS.map(t => `<option ${t === b.TrangThai ? 'selected' : ''}>${t}</option>`).join('')}</select></label>
         <div><div class="lbl">Mức ưu tiên</div><div class="starpick" id="starPick">${[1, 2, 3, 4, 5].map(n => `<span data-s="${n}">★</span>`).join('')}</div></div>
       </div>
-      <div style="margin-top:12px"><div class="lbl">Chuyên khoa có thể khám *</div>
-        ${S.boot.chuyenKhoa.filter(c => c.HoatDong !== '0' || cks.includes(c.Ma)).map(c => `<label class="pill"><input type="checkbox" data-ck="${esc(c.Ma)}" ${cks.includes(c.Ma) ? 'checked' : ''}>${esc(c.Ten)}</label>`).join('')}
+      <div style="margin-top:16px"><div class="lbl">Chuyên khoa có thể khám *</div>
+        <div class="pills">${S.boot.chuyenKhoa.filter(c => c.HoatDong !== '0' || cks.includes(c.Ma)).map(c => `<label class="pill"><input type="checkbox" data-ck="${esc(c.Ma)}" ${cks.includes(c.Ma) ? 'checked' : ''}>${esc(c.Ten)}</label>`).join('')}</div>
       </div>
-      <label class="f" style="margin-top:6px">Ghi chú<textarea data-b="GhiChu" rows="2">${esc(b.GhiChu)}</textarea></label>
+      <label class="f" style="margin-top:14px">Ghi chú<textarea data-b="GhiChu" rows="2">${esc(b.GhiChu)}</textarea></label>
       ${ma ? `<div class="tabs2"><button data-t2="ban" class="on">Lịch bận</button><button data-t2="ls">Lịch sử khám</button></div><div id="t2Out"></div>`
-        : '<div class="small muted" style="margin-top:12px">Lưu bác sỹ trước, sau đó mở lại để nhập lịch bận.</div>'}`,
-    foot: `${ma ? '<button class="btn danger" id="bsDel">Xoá</button>' : ''}<span class="sp"></span><button class="btn" data-close>Đóng</button><button class="btn pri" id="bsSave">💾 Lưu</button>`,
+        : '<div class="note" style="background:#f3f5f8;color:var(--muted)">Lưu bác sỹ trước, sau đó mở lại để nhập lịch bận.</div>'}`,
+    foot: `${ma ? `<button class="btn danger" id="bsDel">${ic('trash')}Xoá</button>` : ''}<span class="sp"></span><button class="btn" data-close>Đóng</button><button class="btn pri" id="bsSave">${ic('save')}Lưu</button>`,
   });
   let sao = Number(b.Sao) || 3;
   const drawStar = () => $$('#starPick span').forEach(s => s.classList.toggle('on', Number(s.dataset.s) <= sao));
@@ -736,13 +1015,13 @@ function moBacSy(ma) {
 async function veLichBan(ma, list) {
   const el = $('#t2Out');
   if (!list) { el.innerHTML = '<div class="muted">Đang tải…</div>'; list = await api('getLichBan', ma); }
-  el.innerHTML = `<div class="toolbar">
-      <label class="f">Ngày bận<input type="date" id="lbNgay" value="${today()}"></label>
-      <div><div class="lbl">Khung giờ</div>${khungList().map(k => `<label class="pill" style="padding:5px 9px;margin-bottom:0"><input type="checkbox" data-lbk="${k.ma}" checked>${k.ten}</label>`).join('')}</div>
-      <label class="f" style="flex:1;min-width:160px">Lý do<input id="lbLyDo" placeholder="Nghỉ phép, trực, công tác…"></label>
-      <button class="btn pri" id="lbAdd">+ Thêm</button></div>
-    ${list.length ? `<table class="t"><thead><tr><th>Ngày</th><th>Khung giờ</th><th>Lý do</th><th></th></tr></thead><tbody>
-      ${list.map(x => `<tr${x.Ngay < today() ? ' class="muted"' : ''}><td>${fmtNgay(x.Ngay)}</td><td>${tenKhung(x.Khung)}</td><td>${esc(x.LyDo)}</td><td class="num"><button class="btn sm danger" data-lbdel="${esc(x.ID)}">Xoá</button></td></tr>`).join('')}
+  el.innerHTML = `<div class="toolbar" style="margin-bottom:14px">
+      <label class="f" style="flex:1 1 150px">Ngày bận<input type="date" id="lbNgay" value="${today()}"></label>
+      <div><div class="lbl">Khung giờ</div><div class="pills">${khungList().map(k => `<label class="pill sm" style="height:38px"><input type="checkbox" data-lbk="${k.ma}" checked>${k.ten}</label>`).join('')}</div></div>
+      <label class="f" style="flex:2 1 180px">Lý do<input id="lbLyDo" placeholder="Nghỉ phép, trực, công tác…"></label>
+      <button class="btn pri" id="lbAdd">${ic('plus')}Thêm</button></div>
+    ${list.length ? `<table class="t inner resp"><thead><tr><th>Ngày</th><th>Khung giờ</th><th>Lý do</th><th></th></tr></thead><tbody>
+      ${list.map(x => `<tr${x.Ngay < today() ? ' class="muted"' : ''}><td class="m-title">${fmtNgay(x.Ngay)}</td><td data-l="Khung giờ">${tenKhung(x.Khung)}</td><td data-l="Lý do">${esc(x.LyDo)}</td><td class="num"><button class="btn sm danger" data-lbdel="${esc(x.ID)}">Xoá</button></td></tr>`).join('')}
       </tbody></table>` : '<div class="muted">Chưa có lịch bận.</div>'}`;
   $('#lbAdd').onclick = async () => {
     const k = $$('[data-lbk]').filter(x => x.checked).map(x => x.dataset.lbk);
@@ -756,9 +1035,9 @@ async function veLichSu(ma) {
   el.innerHTML = '<div class="muted">Đang tải…</div>';
   const list = await api('getLichSuBS', ma);
   if (!$('#t2Out')) return;
-  el.innerHTML = list.length ? `<div class="small muted" style="margin-bottom:6px">${list.length} buổi (không tính đoàn Huỷ)</div>
-    <div style="max-height:320px;overflow:auto"><table class="t"><thead><tr><th>Ngày</th><th>Buổi</th><th>Đoàn</th><th>Chuyên khoa</th><th>Trạng thái</th></tr></thead><tbody>
-    ${list.map(x => `<tr><td>${fmtNgay(x.Ngay)}</td><td>${tenKhung(x.Khung)}</td><td>${esc(x.TenDoan)}<div class="small muted">${esc(x.DiaDiem)}</div></td><td>${esc(x.ck)}</td><td>${badgeTT(x.TrangThai)}</td></tr>`).join('')}
+  el.innerHTML = list.length ? `<div class="small muted" style="margin-bottom:8px">${list.length} buổi (không tính đoàn Huỷ)</div>
+    <div style="max-height:360px;overflow:auto"><table class="t inner resp"><thead><tr><th>Ngày</th><th>Buổi</th><th>Đoàn</th><th>Chuyên khoa</th><th>Trạng thái</th></tr></thead><tbody>
+    ${list.map(x => `<tr><td class="m-title">${fmtNgay(x.Ngay)}<span class="show-m muted"> · ${tenKhung(x.Khung)}</span></td><td class="m-hide">${tenKhung(x.Khung)}</td><td data-l="Đoàn" style="text-align:inherit">${esc(x.TenDoan)}<div class="small muted">${esc(x.DiaDiem)}</div></td><td data-l="Chuyên khoa">${esc(x.ck)}</td><td data-l="Trạng thái">${badgeTT(x.TrangThai)}</td></tr>`).join('')}
     </tbody></table></div>` : '<div class="muted">Bác sỹ chưa được phân công buổi nào.</div>';
 }
 
@@ -766,29 +1045,29 @@ async function veLichSu(ma) {
 VIEWS.caidat = function () {
   const ck = S.boot.chuyenKhoa.map(c => Object.assign({}, c));
   const dg = S.boot.donGia.map(g => Object.assign({}, g));
-  main.innerHTML = `
-  <div class="card"><h3>Chuyên khoa</h3><div id="ckOut"></div>
-    <div class="toolbar" style="margin:10px 0 0"><button class="btn" id="ckAdd">+ Thêm chuyên khoa</button><span class="sp"></span><button class="btn pri" id="ckSave">💾 Lưu chuyên khoa</button></div></div>
-  <div class="card"><h3>Đơn giá công khám</h3>
-    <div class="small muted" style="margin:-6px 0 10px">Hiện tại dùng 1 giá chung cho từng khung giờ. Sau này có thể thêm dòng giá riêng theo chuyên khoa, hoặc dòng giá mới "áp dụng từ ngày" — các buổi khám trước ngày đó vẫn giữ giá cũ. Dòng cụ thể hơn (đúng chuyên khoa) được ưu tiên.</div>
-    <div id="dgOut"></div>
-    <div class="toolbar" style="margin:10px 0 0"><button class="btn" id="dgAdd">+ Thêm dòng giá</button><span class="sp"></span><button class="btn pri" id="dgSave">💾 Lưu đơn giá</button></div></div>
-  <div class="card"><h3>Gợi ý bác sỹ</h3>
-    <div class="toolbar"><label class="f">Đếm số buổi đã khám trong bao nhiêu ngày gần nhất<input type="number" min="7" id="chNgay" value="${esc(S.boot.cauHinh.SoNgayTinhChamChi)}" style="width:120px"></label>
-    <button class="btn pri" id="chSave">💾 Lưu</button></div></div>
+  main.innerHTML = pageHead('Cài đặt') + `
   <div class="card"><h3>File dữ liệu</h3>
-    <div class="small muted" style="margin:-6px 0 10px">Đang dùng: <b>${esc(Kho.tenFile)}</b>. ${Kho.ghiThang ? 'Mọi thay đổi được lưu thẳng vào file này.' : 'Trình duyệt này không ghi thẳng được vào file – nhớ bấm “Tải file dữ liệu” sau khi sửa.'} Nên tạo bản sao lưu định kỳ (ví dụ mỗi tuần).</div>
-    <div class="toolbar"><button class="btn" id="fBackup">⬇ Tải bản sao lưu</button><button class="btn" id="fDoi">📂 Đổi file dữ liệu khác</button></div></div>`;
+    <div class="hint">Đang dùng: <b style="color:var(--text)">${esc(Kho.tenFile)}</b>. ${Kho.ghiThang ? 'Mọi thay đổi được lưu thẳng vào file này.' : 'Trình duyệt này không ghi thẳng được vào file – nhớ bấm “Lưu về máy” sau khi sửa.'} Nên tạo bản sao lưu định kỳ (ví dụ mỗi tuần).</div>
+    <div class="toolbar"><button class="btn" id="fBackup">${ic('down')}Tải bản sao lưu</button><button class="btn" id="fDoi">${ic('folder')}Đổi file dữ liệu khác</button></div></div>
+  <div class="card"><h3>Chuyên khoa</h3><div id="ckOut"></div>
+    <div class="toolbar" style="margin-top:12px"><button class="btn" id="ckAdd">${ic('plus')}Thêm chuyên khoa</button><span class="sp"></span><button class="btn pri" id="ckSave">${ic('save')}Lưu chuyên khoa</button></div></div>
+  <div class="card"><h3>Đơn giá công khám</h3>
+    <div class="hint">Hiện tại dùng 1 giá chung cho từng khung giờ. Sau này có thể thêm dòng giá riêng theo chuyên khoa, hoặc dòng giá mới “áp dụng từ ngày” — các buổi khám trước ngày đó vẫn giữ giá cũ. Dòng cụ thể hơn (đúng chuyên khoa) được ưu tiên.</div>
+    <div id="dgOut"></div>
+    <div class="toolbar" style="margin-top:12px"><button class="btn" id="dgAdd">${ic('plus')}Thêm dòng giá</button><span class="sp"></span><button class="btn pri" id="dgSave">${ic('save')}Lưu đơn giá</button></div></div>
+  <div class="card"><h3>Gợi ý bác sỹ</h3>
+    <div class="toolbar"><label class="f">Đếm số buổi đã khám trong bao nhiêu ngày gần nhất<input type="number" inputmode="numeric" min="7" id="chNgay" value="${esc(S.boot.cauHinh.SoNgayTinhChamChi)}" style="width:140px"></label>
+    <button class="btn pri" id="chSave">${ic('save')}Lưu</button></div></div>`;
   $('#fBackup').onclick = () => Kho.taiVe('SaoLuu_' + today() + '_' + Kho.tenFile);
   $('#fDoi').onclick = doiFile;
 
   const drawCK = () => {
-    $('#ckOut').innerHTML = `<table class="t" style="max-width:720px"><thead><tr><th style="width:110px">Mã</th><th>Tên chuyên khoa</th><th style="width:90px">Thứ tự</th><th style="width:90px">Hoạt động</th><th></th></tr></thead><tbody>
-      ${ck.map((c, i) => `<tr><td><input data-ck-i="${i}" data-k="Ma" value="${esc(c.Ma)}" style="width:90px" ${c._moi ? '' : 'disabled'}></td>
-        <td><input data-ck-i="${i}" data-k="Ten" value="${esc(c.Ten)}" style="width:100%"></td>
-        <td><input type="number" data-ck-i="${i}" data-k="ThuTu" value="${esc(c.ThuTu)}" style="width:70px"></td>
-        <td><input type="checkbox" data-ck-i="${i}" data-k="HoatDong" ${c.HoatDong !== '0' ? 'checked' : ''}></td>
-        <td class="num"><button class="btn sm danger" data-ckdel="${i}">Xoá</button></td></tr>`).join('')}</tbody></table>`;
+    $('#ckOut').innerHTML = `<table class="t inner resp" style="max-width:760px"><thead><tr><th style="width:120px">Mã</th><th>Tên chuyên khoa</th><th style="width:100px">Thứ tự</th><th style="width:100px">Hoạt động</th><th></th></tr></thead><tbody>
+      ${ck.map((c, i) => `<tr><td data-l="Mã"><input data-ck-i="${i}" data-k="Ma" value="${esc(c.Ma)}" style="width:96px" ${c._moi ? '' : 'disabled'}></td>
+        <td data-l="Tên"><input data-ck-i="${i}" data-k="Ten" value="${esc(c.Ten)}" style="width:100%"></td>
+        <td data-l="Thứ tự"><input type="number" inputmode="numeric" data-ck-i="${i}" data-k="ThuTu" value="${esc(c.ThuTu)}" style="width:76px"></td>
+        <td data-l="Hoạt động"><input type="checkbox" data-ck-i="${i}" data-k="HoatDong" ${c.HoatDong !== '0' ? 'checked' : ''}></td>
+        <td class="num m-act"><button class="btn sm ghost danger" data-ckdel="${i}">${ic('trash')}<span class="show-m">Xoá</span></button></td></tr>`).join('')}</tbody></table>`;
     $$('[data-ck-i]').forEach(inp => inp.onchange = () => {
       const c = ck[Number(inp.dataset.ckI)];
       c[inp.dataset.k] = inp.type === 'checkbox' ? (inp.checked ? '1' : '0') : inp.value;
@@ -798,13 +1077,13 @@ VIEWS.caidat = function () {
   const drawDG = () => {
     const ckOpt = v => `<option value="">— Mọi chuyên khoa —</option>` + S.boot.chuyenKhoa.map(c => `<option value="${esc(c.Ma)}" ${c.Ma === v ? 'selected' : ''}>${esc(c.Ten)}</option>`).join('');
     const kOpt = v => `<option value="">— Mọi khung —</option>` + khungList().map(k => `<option value="${k.ma}" ${k.ma === v ? 'selected' : ''}>${k.ten}</option>`).join('');
-    $('#dgOut').innerHTML = `<div class="scroll"><table class="t"><thead><tr><th>Khung giờ</th><th>Chuyên khoa</th><th>Áp dụng từ ngày</th><th>Đơn giá (đ/buổi)</th><th>Ghi chú</th><th></th></tr></thead><tbody>
-      ${dg.map((g, i) => `<tr><td><select data-dg-i="${i}" data-k="Khung">${kOpt(g.Khung)}</select></td>
-        <td><select data-dg-i="${i}" data-k="MaCK">${ckOpt(g.MaCK)}</select></td>
-        <td><input type="date" data-dg-i="${i}" data-k="TuNgay" value="${esc(g.TuNgay)}"></td>
-        <td><input type="number" min="0" step="1000" data-dg-i="${i}" data-k="DonGia" value="${esc(g.DonGia)}" style="width:140px;text-align:right"></td>
-        <td><input data-dg-i="${i}" data-k="GhiChu" value="${esc(g.GhiChu)}" style="width:100%"></td>
-        <td class="num"><button class="btn sm danger" data-dgdel="${i}">Xoá</button></td></tr>`).join('')}</tbody></table></div>`;
+    $('#dgOut').innerHTML = `<div class="scroll"><table class="t inner resp"><thead><tr><th>Khung giờ</th><th>Chuyên khoa</th><th>Áp dụng từ ngày</th><th>Đơn giá (đ/buổi)</th><th>Ghi chú</th><th></th></tr></thead><tbody>
+      ${dg.map((g, i) => `<tr><td data-l="Khung giờ"><select data-dg-i="${i}" data-k="Khung">${kOpt(g.Khung)}</select></td>
+        <td data-l="Chuyên khoa"><select data-dg-i="${i}" data-k="MaCK">${ckOpt(g.MaCK)}</select></td>
+        <td data-l="Từ ngày"><input type="date" data-dg-i="${i}" data-k="TuNgay" value="${esc(g.TuNgay)}"></td>
+        <td data-l="Đơn giá (đ)"><input type="number" inputmode="numeric" min="0" step="1000" data-dg-i="${i}" data-k="DonGia" value="${esc(g.DonGia)}" style="width:140px;text-align:right"></td>
+        <td data-l="Ghi chú"><input data-dg-i="${i}" data-k="GhiChu" value="${esc(g.GhiChu)}" style="width:100%"></td>
+        <td class="num m-act"><button class="btn sm ghost danger" data-dgdel="${i}">${ic('trash')}<span class="show-m">Xoá</span></button></td></tr>`).join('')}</tbody></table></div>`;
     $$('[data-dg-i]').forEach(inp => inp.onchange = () => { dg[Number(inp.dataset.dgI)][inp.dataset.k] = inp.value; });
     $$('[data-dgdel]').forEach(b => b.onclick = () => { dg.splice(Number(b.dataset.dgdel), 1); drawDG(); });
   };
@@ -826,10 +1105,10 @@ VIEWS.caidat = function () {
 function veFileBox() {
   const el = $('#fileBox');
   if (!Kho.tenFile) { el.innerHTML = ''; return; }
-  el.innerHTML = `📄 <b title="${esc(Kho.tenFile)}">${esc(Kho.tenFile)}</b>
-    ${Kho.ghiThang ? (Kho.luuLuc ? `<span class="ok">✓ đã lưu ${Kho.luuLuc}</span>` : '')
-      : (Kho.chuaLuu ? '<button class="btn sm pri" id="fTai">⬇ Tải file dữ liệu (chưa lưu)</button>' : '<span class="ok">✓ đã tải về</span>')}
-    <button class="btn sm" id="fDoiH">Đổi file</button>`;
+  el.innerHTML = `<span class="fname" title="${esc(Kho.tenFile)}">${ic('file')}<b>${esc(Kho.tenFile)}</b></span>
+    ${Kho.ghiThang ? (Kho.luuLuc ? `<span class="fstat ok">${ic('check')}<span class="hide-m">Đã lưu</span> ${Kho.luuLuc}</span>` : '')
+      : (Kho.chuaLuu ? `<button class="btn sm pri" id="fTai" title="Có thay đổi chưa tải file dữ liệu về máy">${ic('down')}Lưu về máy</button>` : `<span class="fstat ok">${ic('check')}Đã tải về</span>`)}
+    <button class="btn sm ghost" id="fDoiH" title="Đổi file dữ liệu">${ic('folder')}<span class="hide-m">Đổi file</span></button>`;
   if ($('#fTai')) $('#fTai').onclick = () => Kho.taiVe();
   $('#fDoiH').onclick = doiFile;
 }
@@ -843,24 +1122,26 @@ function doiFile() {
 
 async function manHinhBatDau(loi) {
   S.tab = 'start';
+  document.body.dataset.tab = 'start';
   $('#nav').innerHTML = '';
   $('#fileBox').innerHTML = '';
   const cu = await Kho.layHandleCu();
-  main.innerHTML = `<div class="start"><div class="card">
-    <h1>🩺 Phân công đoàn khám</h1>
-    <div class="muted">Chọn nơi lưu dữ liệu. Toàn bộ dữ liệu (bác sỹ, đoàn khám, phân công, đơn giá) nằm trong <b>1 file .json trên máy của bạn</b> – không gửi lên mạng.</div>
-    ${loi ? `<div class="note" style="background:var(--bad-soft);color:var(--bad)">${esc(loi)}</div>` : ''}
+  const opt = (id, icon, title, desc, cls, tag) => `<${tag || 'button'} class="optbtn ${cls || ''}" ${tag ? '' : `id="${id}"`}><span class="oi">${ic(icon)}</span><span><b>${title}</b><small>${desc}</small></span><span class="go">${ic('next')}</span>`;
+  main.innerHTML = `<div class="start">
+    <div class="hero"><div class="logo">${ic('heart')}</div><h1>Phân công đoàn khám</h1>
+      <p>Toàn bộ dữ liệu (bác sỹ, đoàn khám, phân công, đơn giá) nằm trong <b>1 file .json trên máy của bạn</b> – không gửi lên mạng.</p></div>
+    ${loi ? `<div class="note bad" style="margin:0 0 14px">${esc(loi)}</div>` : ''}
     <div class="opt">
       ${Kho.HO_TRO ? `
-        ${cu ? `<button class="btn pri" id="sMoLai">📂 Mở lại file lần trước: ${esc(cu.name)}<small>Bấm rồi chọn “Cho phép” nếu trình duyệt hỏi.</small></button>` : ''}
-        <button class="btn ${cu ? '' : 'pri'}" id="sMo">📂 Mở file dữ liệu có sẵn…<small>Chọn file .json đã có (của bạn hoặc trong thư mục dùng chung).</small></button>
-        <button class="btn" id="sTao">➕ Tạo file dữ liệu mới…<small>Chọn thư mục và tên file để bắt đầu từ đầu.</small></button>`
+        ${cu ? opt('sMoLai', 'undo', 'Mở lại file lần trước', `${esc(cu.name)} · bấm “Cho phép” nếu trình duyệt hỏi`, 'main') + '</button>' : ''}
+        ${opt('sMo', 'folder', 'Mở file dữ liệu có sẵn', 'Chọn file .json đã có (của bạn hoặc trong thư mục dùng chung)', cu ? '' : 'main')}</button>
+        ${opt('sTao', 'fplus', 'Tạo file dữ liệu mới', 'Chọn thư mục và tên file để bắt đầu từ đầu')}</button>`
       : `
-        <label class="btn pri" style="cursor:pointer">📂 Mở file dữ liệu có sẵn…<small>Chọn file .json đã có.</small><input type="file" id="sMoInput" accept=".json,application/json" hidden></label>
-        <button class="btn" id="sTaoTV">➕ Bắt đầu dữ liệu mới<small>Sau khi sửa, bấm “Tải file dữ liệu” ở góc trên để lưu về máy.</small></button>`}
+        ${opt('', 'folder', 'Mở file dữ liệu có sẵn', 'Chọn file .json đã có', 'main', 'label')}<input type="file" id="sMoInput" accept=".json,application/json" hidden></label>
+        ${opt('sTaoTV', 'fplus', 'Bắt đầu dữ liệu mới', 'Sau khi sửa, bấm “Lưu về máy” ở góc trên để lưu file')}</button>`}
     </div>
-    ${Kho.HO_TRO ? '' : `<div class="note">Trình duyệt này không cho phép lưu thẳng vào file. Nên dùng <b>Google Chrome</b> hoặc <b>Microsoft Edge</b> trên máy tính để phần mềm tự lưu sau mỗi thao tác.</div>`}
-  </div></div>`;
+    ${Kho.HO_TRO ? '' : `<div class="note">Trình duyệt này không cho phép lưu thẳng vào file. Mỗi lần sửa xong, hãy bấm <b>Lưu về máy</b>. Trên máy tính, nên dùng <b>Google Chrome</b> hoặc <b>Microsoft Edge</b> để phần mềm tự lưu sau mỗi thao tác.</div>`}
+  </div>`;
   const chay = async fn => {
     try { await fn(); vaoPhanMem(); }
     catch (e) { if (e && e.name === 'AbortError') return; manHinhBatDau((e && e.message) || String(e)); }
